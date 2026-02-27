@@ -157,13 +157,13 @@ nav.scrolled{box-shadow:0 4px 30px rgba(79,31,212,0.2)}
 .cb-preview-btn:hover{background:rgba(124,58,237,0.2);color:#fff;border-color:var(--p3)}
 .lb-overlay{position:fixed;inset:0;z-index:500;background:rgba(7,5,28,0.95);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;padding:20px}
 .lb-overlay.open{display:flex}
-.lb-box{background:var(--bg2);border:1px solid var(--line2);border-radius:16px;width:100%;max-width:920px;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;animation:lbIn 0.3s ease}
+.lb-box{background:var(--bg2);border:1px solid var(--line2);border-radius:16px;width:100%;max-width:960px;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;animation:lbIn 0.3s ease}
 @keyframes lbIn{from{opacity:0;transform:scale(0.94)}to{opacity:1;transform:scale(1)}}
 .lb-header{padding:14px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0}
 .lb-title{font-size:15px;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .lb-close{width:32px;height:32px;border-radius:8px;background:rgba(124,58,237,0.12);border:1px solid var(--line);color:var(--mu2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s}
 .lb-close:hover{background:rgba(239,68,68,0.15);border-color:rgba(239,68,68,0.3);color:#f87171}
-.lb-content{flex:1;overflow:hidden;position:relative;min-height:400px;background:var(--bg);display:flex;align-items:center;justify-content:center}
+.lb-content{flex:1;overflow:hidden;overflow-y:auto;position:relative;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center}
 .lb-content iframe{width:100%;height:100%;border:none;display:block}
 .lb-content img{max-width:100%;max-height:100%;object-fit:contain;display:block}
 .lb-content video{max-width:100%;max-height:100%;object-fit:contain;background:#000;display:block}
@@ -421,8 +421,8 @@ let _lbVideos=[], _lbVidIdx=0;
 function _makeVideoEmbed(v){
   const src=v.src||v;
   const isEmbed=src.includes('youtube')||src.includes('facebook')||src.includes('vimeo')||src.includes('drive.google')||src.includes('plugins/video');
-  if(isEmbed) return`<iframe src="${src}" style="width:100%;max-height:72vh;height:72vh;border:none;display:block" allowfullscreen allow="autoplay; fullscreen"></iframe>`;
-  return`<video controls autoplay style="max-width:100%;max-height:72vh;object-fit:contain;background:#000;display:block"><source src="${src}" type="video/mp4"></video>`;
+  if(isEmbed) return`<div style="position:relative;width:100%;padding-bottom:56.25%;background:#000;flex-shrink:0"><iframe src="${src}" style="position:absolute;inset:0;width:100%;height:100%;border:none" allowfullscreen allow="autoplay; fullscreen; picture-in-picture"></iframe></div>`;
+  return`<video controls autoplay style="width:100%;max-height:80vh;object-fit:contain;background:#000;display:block"><source src="${src}" type="video/mp4"></video>`;
 }
 
 function openLB(p){
