@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — project.brandqore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="icon" type="image/x-icon" id="faviconEl" href="">
+<style>
+:root{--bg:#07051c;--bg2:#0d0a2e;--bg3:#13103a;--card:#0f0c30;--p1:#4f1fd4;--p2:#6d28d9;--p3:#7c3aed;--p4:#a855f7;--p5:#d8b4fe;--line:rgba(124,58,237,0.16);--line2:rgba(124,58,237,0.36);--txt:#ede9ff;--mu:#7b6fa8;--mu2:#a398cc;--red:rgba(239,68,68,1);--green:rgba(34,197,94,1)}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);display:flex;flex-direction:column}
+a{text-decoration:none;color:inherit}
+button{font-family:'Inter',sans-serif;cursor:pointer;border:none;background:none}
+input,select,textarea{font-family:'Inter',sans-serif}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--p3);border-radius:2px}
+
+/* ══ LOGIN SCREEN ══ */
+#loginScreen{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column}
+.login-bg{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.login-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(124,58,237,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,0.1) 1px,transparent 1px);background-size:60px 60px}
+.login-glow{position:absolute;border-radius:50%;filter:blur(80px)}
+.login-ga{width:500px;height:500px;background:rgba(79,31,212,0.25);top:-200px;left:-150px;animation:lgf 8s ease-in-out infinite}
+.login-gb{width:400px;height:400px;background:rgba(124,58,237,0.18);bottom:-100px;right:-100px;animation:lgf 10s ease-in-out infinite reverse}
+@keyframes lgf{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+.login-box{position:relative;z-index:1;background:var(--bg2);border:1px solid var(--line2);border-radius:18px;padding:40px 44px;width:100%;max-width:420px;text-align:center;box-shadow:0 30px 80px rgba(79,31,212,0.3)}
+.login-logo{font-size:22px;font-weight:900;color:#fff;margin-bottom:4px}
+.login-logo span{color:var(--p4)}
+.login-sub{font-size:13px;color:var(--mu2);margin-bottom:32px}
+.login-fields{display:flex;flex-direction:column;gap:14px;margin-bottom:20px}
+.login-fg label{display:block;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--mu2);margin-bottom:6px;text-align:left}
+.login-input{width:100%;background:var(--bg3);border:1px solid var(--line);color:var(--txt);font-size:14px;padding:12px 16px;border-radius:9px;outline:none;transition:border-color 0.2s}
+.login-input:focus{border-color:var(--p3)}
+.login-btn{width:100%;background:linear-gradient(135deg,var(--p1),var(--p3));color:#fff;font-size:14px;font-weight:700;padding:13px;border-radius:9px;cursor:pointer;border:none;transition:all 0.2s;box-shadow:0 4px 20px rgba(79,31,212,0.4)}
+.login-btn:hover{opacity:0.9;transform:translateY(-1px)}
+.login-err{font-size:13px;color:#f87171;margin-top:10px;min-height:20px;font-weight:600}
+.login-hint{font-size:11px;color:var(--mu);margin-top:16px}
+
+/* TOPBAR */
+.tb{height:56px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:var(--bg2);border-bottom:1px solid var(--line2);z-index:10}
+.tb-left{display:flex;align-items:center;gap:12px}
+.tb-logo{font-size:16px;font-weight:800;color:#fff}
+.tb-logo span{color:var(--p4)}
+.tb-badge{font-size:10px;font-weight:600;letter-spacing:1px;background:rgba(124,58,237,0.18);border:1px solid var(--line2);color:var(--p5);padding:3px 10px;border-radius:20px}
+.tb-right{display:flex;gap:10px;align-items:center}
+.tb-btn{display:flex;align-items:center;gap:6px;background:rgba(124,58,237,0.14);border:1px solid var(--line2);color:var(--p5);font-size:12px;font-weight:600;padding:6px 14px;border-radius:6px;transition:all 0.2s}
+.tb-btn:hover{background:rgba(124,58,237,0.28);color:#fff}
+.tb-logout{display:flex;align-items:center;gap:6px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);color:#f87171;font-size:12px;font-weight:600;padding:6px 14px;border-radius:6px;transition:all 0.2s;cursor:pointer}
+.tb-logout:hover{background:rgba(239,68,68,0.2);color:#fff}
+.lay{display:flex;flex:1;overflow:hidden}
+.sb{width:210px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--line);display:flex;flex-direction:column;overflow-y:auto;padding:18px 10px;gap:3px}
+.sb-sec{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--mu);padding:12px 10px 6px}
+.sb-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:7px;font-size:13px;font-weight:500;color:var(--mu2);cursor:pointer;transition:all 0.18s;border:1px solid transparent}
+.sb-item:hover{background:rgba(124,58,237,0.1);color:var(--txt)}
+.sb-item.on{background:rgba(124,58,237,0.18);border-color:var(--line2);color:#fff}
+.sb-item .ic{font-size:15px;flex-shrink:0}
+.sb-badge{margin-left:auto;font-size:10px;font-weight:700;background:rgba(124,58,237,0.2);color:var(--p4);padding:1px 7px;border-radius:10px}
+.main{flex:1;overflow-y:auto;padding:28px 32px}
+@media(max-width:640px){.main{padding:20px 16px}}
+.panel{display:none}
+.panel.on{display:block}
+.ph{margin-bottom:22px}
+.ph h2{font-size:22px;font-weight:800;color:#fff;margin-bottom:3px}
+.ph p{font-size:13px;color:var(--mu2)}
+.scards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:24px}
+.sc{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px;position:relative;overflow:hidden;transition:transform 0.2s,box-shadow 0.2s}
+.sc:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(79,31,212,0.2)}
+.sc::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--p1),var(--p4))}
+.sc-n{font-size:32px;font-weight:900;color:#fff;line-height:1}
+.sc-l{font-size:11px;color:var(--mu);margin-top:4px;letter-spacing:0.5px}
+.sc-t{display:inline-block;margin-top:7px;font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px}
+.tg{background:rgba(34,197,94,0.15);color:#4ade80}
+.tv{background:rgba(124,58,237,0.18);color:var(--p5)}
+.tr{background:rgba(239,68,68,0.15);color:#f87171}
+.chart-wrap{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px 22px;margin-bottom:16px}
+.chart-title{font-size:13px;font-weight:700;color:#fff;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.bar-chart{display:flex;align-items:flex-end;gap:8px;height:120px;overflow-x:auto;padding-bottom:4px}
+.bar-item{display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0;min-width:42px}
+.bar{width:32px;border-radius:5px 5px 0 0;background:linear-gradient(180deg,var(--p3),var(--p1));min-height:4px;transition:height 0.6s ease;position:relative;cursor:pointer}
+.bar:hover{filter:brightness(1.2)}
+.bar-tooltip{position:absolute;top:-30px;left:50%;transform:translateX(-50%);background:var(--bg2);border:1px solid var(--line2);font-size:11px;font-weight:700;color:var(--p5);padding:3px 8px;border-radius:5px;white-space:nowrap;opacity:0;transition:opacity 0.2s;pointer-events:none}
+.bar:hover .bar-tooltip{opacity:1}
+.bar-lbl{font-size:9px;color:var(--mu);text-align:center;word-break:break-all;line-height:1.2}
+.bar-n{font-size:10px;color:var(--mu2);font-weight:600}
+.box{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px 22px;margin-bottom:16px}
+.box-h{font-size:13px;font-weight:700;color:#fff;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.box-h span{font-size:13px;font-weight:700;color:#fff}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.full{grid-column:1/-1}
+.fg{display:flex;flex-direction:column;gap:5px}
+.fg label{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--mu2)}
+.fg input,.fg select,.fg textarea{background:var(--bg3);border:1px solid var(--line);color:var(--txt);font-size:13px;padding:9px 12px;border-radius:7px;outline:none;transition:border-color 0.2s}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--p3)}
+.fg textarea{resize:vertical;min-height:70px}
+.fg select option{background:var(--bg3)}
+
+/* Type Select (project type) */
+.type-select-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
+.type-opt{display:flex;align-items:center;gap:8px;padding:9px 16px;border:1px solid var(--line);border-radius:8px;cursor:pointer;transition:all 0.2s;font-size:13px;font-weight:600;color:var(--mu2)}
+.type-opt:hover{border-color:var(--p3);color:var(--txt)}
+.type-opt.on{background:rgba(124,58,237,0.18);border-color:var(--p3);color:#fff}
+.type-opt input{display:none}
+.type-opt .t-ico{font-size:18px}
+
+.media-tabs{display:flex;gap:8px;margin-bottom:16px;border-bottom:1px solid var(--line);padding-bottom:12px}
+.mt-btn{padding:7px 16px;border-radius:7px;font-size:12px;font-weight:600;border:1px solid var(--line);color:var(--mu2);cursor:pointer;transition:all 0.2s}
+.mt-btn.on{background:rgba(124,58,237,0.18);border-color:var(--p3);color:#fff}
+.mt-panel{display:none}
+.mt-panel.on{display:block}
+.upload-zone{border:2px dashed var(--line2);border-radius:9px;padding:28px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--bg3)}
+.upload-zone:hover{border-color:var(--p3);background:rgba(124,58,237,0.05)}
+.upload-zone input{display:none}
+.upload-zone .uz-icon{font-size:32px;margin-bottom:8px}
+.upload-zone .uz-title{font-size:14px;font-weight:600;color:var(--txt)}
+.upload-zone .uz-sub{font-size:12px;color:var(--mu);margin-top:4px}
+.uz-preview{margin-top:14px;border-radius:8px;overflow:hidden;border:1px solid var(--line);background:var(--bg);display:none;position:relative}
+.uz-preview img,.uz-preview video{width:100%;max-height:360px;object-fit:contain;display:block;background:#0a0814}
+.uz-preview-remove{position:absolute;top:8px;right:8px;background:rgba(7,5,28,0.85);border:1px solid rgba(239,68,68,0.4);color:#f87171;font-size:12px;font-weight:700;padding:3px 10px;border-radius:5px;cursor:pointer}
+.uz-info{margin-top:10px;font-size:12px;color:var(--mu2);text-align:left;padding:10px 12px;background:var(--bg3);border-radius:6px;border:1px solid var(--line)}
+.media-thumb{width:52px;height:36px;border-radius:5px;object-fit:cover;border:1px solid var(--line);cursor:pointer}
+.media-thumb-video{width:52px;height:36px;border-radius:5px;background:rgba(220,38,38,0.1);border:1px solid rgba(239,68,68,0.3);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer}
+.no-media{font-size:11px;color:var(--mu);font-style:italic}
+.alog-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.alog-item:last-child{border-bottom:none}
+.alog-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.alog-dot.add{background:#4ade80}
+.alog-dot.edit{background:var(--p4)}
+.alog-dot.del{background:#f87171}
+.alog-txt{flex:1;font-size:13px;color:var(--mu2);line-height:1.4}
+.alog-txt strong{color:#fff}
+.alog-time{font-size:11px;color:var(--mu);flex-shrink:0}
+.btn{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700;padding:9px 20px;border-radius:7px;cursor:pointer;transition:all 0.2s;border:none}
+.btn-v{background:linear-gradient(135deg,var(--p1),var(--p3));color:#fff;box-shadow:0 3px 16px rgba(79,31,212,0.35)}
+.btn-v:hover{opacity:0.9;transform:translateY(-1px)}
+.btn-g{background:rgba(124,58,237,0.12);border:1px solid var(--line2);color:var(--p5)}
+.btn-g:hover{background:rgba(124,58,237,0.22);color:#fff}
+.btn-r{background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.28);color:#f87171}
+.btn-r:hover{background:rgba(239,68,68,0.22);color:#fff}
+.btn-sm{padding:5px 12px;font-size:11px;border-radius:5px}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:9px 12px;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--mu);border-bottom:1px solid var(--line2)}
+td{padding:10px 12px;font-size:13px;color:var(--txt);border-bottom:1px solid rgba(124,58,237,0.07);vertical-align:middle}
+tr:hover td{background:rgba(124,58,237,0.04)}
+.tc{font-size:11px;font-weight:700;color:var(--p4)}
+.tb2{font-weight:600;color:#fff}
+.tu{font-size:11px;color:var(--mu2);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tpill{font-size:10px;padding:2px 9px;border-radius:10px;background:rgba(124,58,237,0.15);color:var(--p4);border:1px solid var(--line);white-space:nowrap}
+.ttype{font-size:10px;padding:2px 9px;border-radius:10px;border:1px solid var(--line);white-space:nowrap}
+.ttype-w{background:rgba(79,31,212,0.15);color:#a78bfa}
+.ttype-g{background:rgba(245,158,11,0.15);color:#fbbf24}
+.ttype-v{background:rgba(220,38,38,0.15);color:#f87171}
+.tact{display:flex;gap:6px;flex-wrap:wrap}
+.srow{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.sinput{background:var(--bg3);border:1px solid var(--line);color:var(--txt);font-size:13px;padding:8px 14px;border-radius:7px;outline:none;width:220px;transition:border-color 0.2s}
+.sinput:focus{border-color:var(--p3)}
+.bulk-bar{display:none;align-items:center;gap:10px;padding:10px 14px;background:rgba(124,58,237,0.1);border:1px solid var(--line2);border-radius:8px;margin-bottom:12px}
+.bulk-bar.show{display:flex}
+.bulk-info{font-size:13px;font-weight:600;color:var(--p5)}
+.crow{display:flex;align-items:center;gap:12px;padding:10px 14px;border:1px solid var(--line);border-radius:8px;margin-bottom:8px;background:var(--bg3)}
+.crow-ico{font-size:18px}
+.crow-name{flex:1;font-weight:600;color:#fff;font-size:14px}
+.crow-cnt{font-size:11px;color:var(--mu)}
+.hprev{background:var(--bg3);border:1px solid var(--line2);border-radius:9px;padding:22px;margin-bottom:14px}
+.hp-l1{font-size:22px;font-weight:900;color:#fff;letter-spacing:-0.5px}
+.hp-l2{font-size:28px;font-weight:900;letter-spacing:-0.5px;background:linear-gradient(130deg,var(--p3),var(--p4),#e879f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hp-sub{font-size:13px;color:var(--mu2);margin-top:8px;line-height:1.6}
+.logo-prev{background:var(--bg3);border:1px solid var(--line2);border-radius:9px;padding:20px 24px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.lp-box{background:rgba(7,5,28,0.8);border:1px solid var(--line);border-radius:7px;padding:12px 20px;display:flex;align-items:center;gap:8px;flex:1;min-width:160px}
+.lp-label{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--mu);margin-bottom:8px}
+.lp-txt{font-size:17px;font-weight:800;color:#fff}
+.lp-txt span{color:var(--p4)}
+.upload-zone.small{padding:16px;margin:0}
+.upload-zone.small .uz-icon{font-size:22px;margin-bottom:4px}
+.upload-zone.small .uz-title{font-size:13px}
+.img-preview{width:100%;max-height:80px;object-fit:contain;border-radius:6px;margin-top:10px;display:none}
+.media-current{border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:12px;position:relative;display:none}
+.media-current.show{display:block}
+.media-current img,.media-current video{width:100%;max-height:220px;object-fit:contain;display:block;background:#0a0814}
+.media-current-lbl{position:absolute;top:8px;left:8px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:rgba(7,5,28,0.85);border:1px solid var(--line2);color:var(--p5);padding:3px 8px;border-radius:4px}
+.toast{position:fixed;bottom:20px;right:20px;z-index:999;background:linear-gradient(135deg,var(--p1),var(--p3));color:#fff;padding:11px 20px;border-radius:8px;font-size:13px;font-weight:700;box-shadow:0 6px 28px rgba(79,31,212,0.4);display:none;animation:tin 0.3s ease}
+@keyframes tin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.mb{position:fixed;inset:0;z-index:500;background:rgba(7,5,28,0.88);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center}
+.mb.open{display:flex}
+.md{background:var(--bg2);border:1px solid var(--line2);border-radius:12px;padding:26px 28px;max-width:360px;width:90%;text-align:center}
+.md h3{font-size:17px;font-weight:800;color:#fff;margin-bottom:7px}
+.md p{font-size:13px;color:var(--mu2);margin-bottom:20px;line-height:1.6}
+.md-btns{display:flex;gap:10px;justify-content:center}
+.lb-ov{position:fixed;inset:0;z-index:600;background:rgba(7,5,28,0.96);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;padding:20px}
+.lb-ov.open{display:flex}
+.lb-box{background:var(--bg2);border:1px solid var(--line2);border-radius:14px;width:100%;max-width:800px;max-height:88vh;overflow:hidden;display:flex;flex-direction:column;animation:lbin 0.3s ease}
+@keyframes lbin{from{opacity:0;transform:scale(0.94)}to{opacity:1;transform:scale(1)}}
+.lb-hd{padding:14px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.lb-hd-t{font-size:14px;font-weight:700;color:#fff}
+.lb-close{width:30px;height:30px;border-radius:6px;background:rgba(124,58,237,0.1);border:1px solid var(--line);color:var(--mu2);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.lb-close:hover{background:rgba(239,68,68,0.15);color:#f87171}
+.lb-body{flex:1;overflow:hidden;min-height:300px;background:var(--bg);display:flex;align-items:center;justify-content:center}
+.lb-body img{max-width:100%;max-height:460px;object-fit:contain}
+.lb-body video{max-width:100%;max-height:460px}
+.lb-body iframe{width:100%;height:460px;border:none}
+
+/* Favicon preview */
+.fav-preview{display:flex;align-items:center;gap:14px;margin-top:14px;padding:14px 16px;background:var(--bg3);border:1px solid var(--line);border-radius:9px}
+.fav-img{width:40px;height:40px;border-radius:6px;object-fit:contain;border:1px solid var(--line);background:var(--bg2);display:none}
+.fav-placeholder{width:40px;height:40px;border-radius:6px;border:1px dashed var(--line2);display:flex;align-items:center;justify-content:center;font-size:20px;background:var(--bg2)}
+.fav-info{font-size:12px;color:var(--mu2)}
+.fav-info strong{color:#fff;display:block;margin-bottom:2px}
+
+/* Security section */
+.sec-card{background:linear-gradient(135deg,rgba(79,31,212,0.12),rgba(124,58,237,0.08));border:1px solid var(--line2);border-radius:10px;padding:18px 20px;margin-bottom:14px}
+.sec-card-h{font-size:13px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.pwd-strength{height:4px;border-radius:2px;margin-top:6px;transition:all 0.3s;background:var(--line2)}
+.pwd-strength.weak{background:#f87171;width:33%}
+.pwd-strength.ok{background:#fbbf24;width:66%}
+.pwd-strength.strong{background:#4ade80;width:100%}
+
+@media(max-width:900px){.sb{width:180px}.fg2,.fg3{grid-template-columns:1fr}.full{grid-column:1}}
+@media(max-width:640px){.sb{display:none}}
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN SCREEN ══ -->
+<div id="loginScreen">
+  <div class="login-bg">
+    <div class="login-grid"></div>
+    <div class="login-glow login-ga"></div>
+    <div class="login-glow login-gb"></div>
+  </div>
+  <div class="login-box">
+    <div class="login-logo">Brand<span>Qore</span></div>
+    <div class="login-sub">Admin Panel — Secure Access</div>
+    <div class="login-fields">
+      <div class="login-fg">
+        <label>Username / ID</label>
+        <input type="text" class="login-input" id="loginUser" placeholder="Enter your username" autocomplete="username">
+      </div>
+      <div class="login-fg">
+        <label>Password</label>
+        <input type="password" class="login-input" id="loginPass" placeholder="Enter your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+    </div>
+    <button class="login-btn" onclick="doLogin()">🔐 Login to Admin</button>
+    <div class="login-err" id="loginErr"></div>
+    <div class="login-hint">Default: admin / admin123</div>
+  </div>
+</div>
+
+<!-- ══ ADMIN APP ══ -->
+<div id="adminApp" style="display:none;flex-direction:column;height:100%">
+
+<div class="tb">
+  <div class="tb-left">
+    <div class="tb-logo">Brand<span>Qore</span> Admin</div>
+    <div class="tb-badge">project.brandqore</div>
+  </div>
+  <div class="tb-right">
+    <a href="index.html" target="_blank" class="tb-btn">↗ View Site</a>
+    <div id="tbFbStatus" style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:6px 12px;border-radius:6px;background:rgba(100,100,100,0.1);border:1px solid var(--line);color:var(--mu)">⚪ Firebase</div>
+    <button class="tb-logout" onclick="doLogout()">🔓 Logout</button>
+  </div>
+</div>
+
+<div class="lay">
+  <!-- SIDEBAR -->
+  <div class="sb">
+    <div class="sb-sec">Overview</div>
+    <div class="sb-item on" data-p="dash" onclick="go(this)"><span class="ic">📊</span> Dashboard</div>
+    <div class="sb-sec">Projects</div>
+    <div class="sb-item" data-p="all" onclick="go(this)"><span class="ic">🗂</span> All Projects <span class="sb-badge" id="sbN">79</span></div>
+    <div class="sb-item" data-p="add" onclick="go(this)"><span class="ic">➕</span> Add Project</div>
+    <div class="sb-sec">Content</div>
+    <div class="sb-item" data-p="cats" onclick="go(this)"><span class="ic">🏷</span> Categories</div>
+    <div class="sb-item" data-p="hero" onclick="go(this)"><span class="ic">🎯</span> Hero Section</div>
+    <div class="sb-sec">Site</div>
+    <div class="sb-item" data-p="logo" onclick="go(this)"><span class="ic">🖼</span> Logo & Branding</div>
+    <div class="sb-item" data-p="settings" onclick="go(this)"><span class="ic">⚙️</span> Settings</div>
+    <div class="sb-item" data-p="security" onclick="go(this)"><span class="ic">🔐</span> Security</div>
+    <div class="sb-item" data-p="activity" onclick="go(this)"><span class="ic">📋</span> Activity Log</div>
+  </div>
+
+  <!-- MAIN -->
+  <div id="storageBar"></div>
+  <div class="main">
+
+    <!-- ═══ DASHBOARD ═══ -->
+    <div class="panel on" id="panel-dash">
+      <div class="ph"><h2>Dashboard</h2><p>Overview of your BrandQore portfolio</p></div>
+      <div class="scards">
+        <div class="sc"><div class="sc-n" id="dTot">79</div><div class="sc-l">Total Projects</div><span class="sc-t tg">● Live</span></div>
+        <div class="sc"><div class="sc-n" id="dCats">12</div><div class="sc-l">Categories</div><span class="sc-t tv">Active</span></div>
+        <div class="sc"><div class="sc-n" id="dWeb">0</div><div class="sc-l">Websites</div><span class="sc-t tv">🌐</span></div>
+        <div class="sc"><div class="sc-n" id="dGfx">0</div><div class="sc-l">Graphic Design</div><span class="sc-t tv">🎨</span></div>
+        <div class="sc"><div class="sc-n" id="dVid">0</div><div class="sc-l">Video</div><span class="sc-t tr">🎬</span></div>
+        <div class="sc"><div class="sc-n">vercel</div><div class="sc-l">Platform</div><span class="sc-t tv">Deployed</span></div>
+      </div>
+      <div class="chart-wrap"><div class="chart-title">📊 Projects by Category</div><div class="bar-chart" id="barChart"></div></div>
+      <div class="box"><div class="box-h"><span>📋 Recent Projects</span></div><div class="tw"><table id="dashTbl"></table></div></div>
+      <div class="box"><div class="box-h"><span>🗓 Activity Log (Last 5)</span> <a href="#" onclick="goActivity()" style="font-size:12px;color:var(--p4);font-weight:600">View All →</a></div><div id="dashLog"></div></div>
+    </div>
+
+    <!-- ═══ ALL PROJECTS ═══ -->
+    <div class="panel" id="panel-all">
+      <div class="ph"><h2>All Projects</h2><p>Search, edit or remove projects</p></div>
+      <div class="box">
+        <div class="srow">
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+            <div style="font-size:13px;font-weight:700;color:#fff">Projects (<span id="ptN">79</span>)</div>
+            <input class="sinput" placeholder="🔍 Search..." oninput="searchP(this.value)" id="searchInput">
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <select id="filterType" onchange="applyFilters()" style="background:var(--bg3);border:1px solid var(--line);color:var(--txt);font-size:12px;padding:7px 12px;border-radius:7px;outline:none">
+              <option value="">All Types</option>
+              <option value="website">🌐 Websites</option>
+              <option value="graphic">🎨 Graphic Design</option>
+              <option value="video">🎬 Video</option>
+            </select>
+            <select id="filterCat" onchange="applyFilters()" style="background:var(--bg3);border:1px solid var(--line);color:var(--txt);font-size:12px;padding:7px 12px;border-radius:7px;outline:none">
+              <option value="">All Categories</option>
+            </select>
+          </div>
+        </div>
+        <div class="bulk-bar" id="bulkBar">
+          <span class="bulk-info"><span id="bulkCount">0</span> selected</span>
+          <button class="btn btn-r btn-sm" onclick="bulkDelete()">🗑 Delete Selected</button>
+          <button class="btn btn-g btn-sm" onclick="clearSelection()">✕ Clear</button>
+        </div>
+        <div class="tw"><table id="ptbl"></table></div>
+      </div>
+    </div>
+
+    <!-- ═══ ADD PROJECT ═══ -->
+    <div class="panel" id="panel-add">
+      <div class="ph"><h2 id="addH">Add New Project</h2><p>Fill in the project details and upload media</p></div>
+      <input type="hidden" id="ei" value="">
+      <div class="box">
+        <div class="box-h"><span>Project Details</span></div>
+        <div class="fg2">
+          <div class="fg"><label>Title *</label><input id="ft" placeholder="e.g. Panjabi Threads Luxury"></div>
+          <div class="fg"><label>Live URL</label><input id="fu" placeholder="https://example.vercel.app/"></div>
+          <div class="fg"><label>Category *</label><select id="fc"></select></div>
+          <div class="fg"><label>Number</label><input type="number" id="fn" placeholder="80"></div>
+          <div class="fg full"><label>Description</label><textarea id="fd" placeholder="Short description..."></textarea></div>
+        </div>
+        <br>
+        <div class="fg">
+          <label>Project Type *</label>
+          <div class="type-select-row" id="typeSelectRow">
+            <label class="type-opt on"><input type="radio" name="ptype" value="website" checked><span class="t-ico">🌐</span> Website</label>
+            <label class="type-opt"><input type="radio" name="ptype" value="graphic"><span class="t-ico">🎨</span> Graphic Design</label>
+            <label class="type-opt"><input type="radio" name="ptype" value="video"><span class="t-ico">🎬</span> Video Editing</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="box-h"><span>🖼 Project Media (Preview Image or Video)</span></div>
+        <p style="font-size:12px;color:var(--mu);margin-bottom:16px">Upload images/video for preview. <strong>Graphic Design</strong> type supports unlimited images (gallery).</p>
+        <div class="media-current" id="currentMediaWrap">
+          <div class="media-current-lbl" id="currentMediaLbl">Current</div>
+          <div id="currentMediaInner"></div>
+          <div style="padding:10px 14px;display:flex;gap:8px;background:var(--bg3)">
+            <button class="btn btn-r btn-sm" onclick="clearCurrentMedia()">🗑 Remove Current Media</button>
+          </div>
+        </div>
+        <div class="media-tabs">
+          <button class="mt-btn on" onclick="switchMediaTab('img',this)">📷 Image</button>
+          <button class="mt-btn" id="multiImgTabBtn" onclick="switchMediaTab('multiimg',this)" style="display:none">🖼 Gallery (Multi)</button>
+          <button class="mt-btn" onclick="switchMediaTab('video',this)">▶ Video</button>
+          <button class="mt-btn" onclick="switchMediaTab('none',this)">🌐 Live Preview (iframe)</button>
+        </div>
+
+        <!-- Single image tab -->
+        <div class="mt-panel on" id="mt-img">
+          <div class="upload-zone" onclick="document.getElementById('imgFile').click()" id="imgZone">
+            <div class="uz-icon">📷</div><div class="uz-title">Click to upload image</div><div class="uz-sub">PNG, JPG, WebP — যেকোনো সাইজ সমর্থিত</div>
+            <input type="file" id="imgFile" accept="image/*" onchange="loadImg(event)">
+          </div>
+          <div class="uz-preview" id="imgPreview"><img id="imgPreviewEl" src="" alt="Preview"><div class="uz-preview-remove" onclick="clearImg()">✕ Remove</div></div>
+          <div class="uz-info" id="imgInfo" style="display:none"></div>
+        </div>
+
+        <!-- Multi image gallery tab (for Graphic Design) -->
+        <div class="mt-panel" id="mt-multiimg">
+          <div class="upload-zone" onclick="document.getElementById('multiImgFile').click()">
+            <div class="uz-icon">🖼</div>
+            <div class="uz-title">Click to add images to gallery</div>
+            <div class="uz-sub">PNG, JPG, WebP — একসাথে বা বারবার ক্লিক করে unlimited ছবি যোগ করুন</div>
+            <input type="file" id="multiImgFile" accept="image/*" multiple onchange="loadMultiImg(event)" style="display:none">
+          </div>
+          <div id="multiImgGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin-top:14px"></div>
+          <div id="multiImgCount" style="font-size:12px;color:var(--mu);margin-top:8px"></div>
+        </div>
+
+        <!-- Video tab — supports upload + URL (Facebook, YouTube, Vimeo, etc.) + multiple -->
+        <div class="mt-panel" id="mt-video">
+          <div style="background:var(--bg3);border:1px solid var(--line);border-radius:9px;padding:14px;margin-bottom:12px;font-size:12px;color:var(--mu)">
+            💡 <strong style="color:var(--txt)">Video URL পেস্ট করুন</strong> — Facebook, YouTube, Vimeo, Google Drive সব কাজ করবে। বারবার Add করে একাধিক ভিডিও যোগ করুন।
+          </div>
+
+          <!-- URL input -->
+          <div style="display:flex;gap:8px;margin-bottom:12px">
+            <input id="videoUrlInput" placeholder="Facebook/YouTube/Vimeo/Drive লিংক পেস্ট করুন..." style="flex:1;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg2);color:var(--txt);font-size:13px">
+            <button class="btn btn-v btn-sm" onclick="addVideoUrl()" style="white-space:nowrap">+ Add URL</button>
+          </div>
+
+          <!-- Thumbnail upload for video -->
+          <div style="border:1px solid var(--line);border-radius:9px;padding:12px;background:var(--bg3);margin-bottom:12px">
+            <div style="font-size:12px;font-weight:600;color:var(--txt);margin-bottom:8px">🖼 ভিডিও Thumbnail (Card-এ দেখাবে)</div>
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="upload-zone small" onclick="document.getElementById('vidThumbFile').click()" style="flex:1;margin:0;padding:10px">
+                <div class="uz-icon" style="font-size:18px;margin-bottom:2px">📷</div>
+                <div class="uz-title" style="font-size:12px">Thumbnail আপলোড করুন</div>
+                <div class="uz-sub">Facebook ভিডিওর স্ক্রিনশট দিন</div>
+                <input type="file" id="vidThumbFile" accept="image/*" onchange="loadVidThumb(event)" style="display:none">
+              </div>
+              <div id="vidThumbPreview" style="display:none;width:100px;height:70px;border-radius:8px;overflow:hidden;border:1px solid var(--line);flex-shrink:0;position:relative">
+                <img id="vidThumbImg" style="width:100%;height:100%;object-fit:cover;display:block">
+                <button onclick="clearVidThumb()" style="position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:50%;background:rgba(220,38,38,0.9);border:none;color:#fff;font-size:10px;cursor:pointer;padding:0">✕</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- OR file upload -->
+          <div style="text-align:center;color:var(--mu);font-size:12px;margin-bottom:10px">— অথবা ভিডিও ফাইল আপলোড করুন —</div>
+          <div class="upload-zone" onclick="document.getElementById('videoFile').click()" id="videoZone">
+            <div class="uz-icon">🎬</div><div class="uz-title">Click to upload video file</div><div class="uz-sub">MP4, WebM, MOV — যেকোনো সাইজ সমর্থিত</div>
+            <input type="file" id="videoFile" accept="video/*" onchange="loadVideoFile(event)" style="display:none">
+          </div>
+
+          <!-- Video list -->
+          <div id="videoList" style="margin-top:14px"></div>
+          <div id="videoCount" style="font-size:12px;color:var(--mu);margin-top:6px"></div>
+        </div>
+        <div class="mt-panel" id="mt-none">
+          <div style="background:var(--bg3);border:1px solid var(--line);border-radius:9px;padding:20px;text-align:center">
+            <div style="font-size:28px;margin-bottom:8px">🌐</div>
+            <div style="font-size:14px;font-weight:600;color:var(--txt)">Use live iframe preview</div>
+            <div style="font-size:13px;color:var(--mu);margin-top:4px">The project URL will be embedded as a live preview</div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-v" onclick="saveP()">💾 Save Project</button>
+        <button class="btn btn-g" onclick="clearF()">✕ Clear</button>
+      </div>
+    </div>
+
+    <!-- ═══ CATEGORIES ═══ -->
+    <div class="panel" id="panel-cats">
+      <div class="ph"><h2>Categories</h2><p>Manage portfolio categories</p></div>
+      <div class="box">
+        <div class="box-h"><span>➕ Add Category</span></div>
+        <div class="fg2" style="max-width:480px">
+          <div class="fg"><label>Name</label><input id="ncn" placeholder="e.g. Healthcare"></div>
+          <div class="fg"><label>Icon (emoji)</label><input id="nci" placeholder="🏥" maxlength="4" style="font-size:20px;text-align:center"></div>
+        </div>
+        <br><button class="btn btn-v" onclick="addCat()">➕ Add Category</button>
+      </div>
+      <div class="box"><div class="box-h"><span>Existing Categories</span></div><div id="catList"></div></div>
+    </div>
+
+    <!-- ═══ HERO ═══ -->
+    <div class="panel" id="panel-hero">
+      <div class="ph"><h2>Hero Section</h2><p>Edit homepage headline and description</p></div>
+      <div class="hprev"><div class="hp-l1" id="hp1">Where Creativity</div><div class="hp-l2" id="hp2">Meets Growth.</div><div class="hp-sub" id="hpsub">A curated showcase of live projects...</div></div>
+      <div class="box">
+        <div class="box-h"><span>Edit Text</span></div>
+        <div class="fg2">
+          <div class="fg"><label>Line 1 — White</label><input id="h1" placeholder="Where Creativity" oninput="prevH()"></div>
+          <div class="fg"><label>Line 2 — Gradient (Typing Effect)</label><input id="h2" placeholder="Meets Growth." oninput="prevH()"></div>
+          <div class="fg full"><label>Description</label><textarea id="hsub" placeholder="Short description..." oninput="prevH()"></textarea></div>
+        </div>
+      </div>
+      <div class="box"><div class="box-h"><span>Footer Copyright</span></div><div class="fg" style="max-width:500px"><label>Footer Text</label><input id="hfoot" placeholder="© 2025 BrandQore..."></div></div>
+      <br><button class="btn btn-v" onclick="saveHero()">💾 Save Hero</button>
+    </div>
+
+    <!-- ═══ LOGO & BRANDING ═══ -->
+    <div class="panel" id="panel-logo">
+      <div class="ph"><h2>Logo & Branding</h2><p>Change the site logo shown in navbar and footer</p></div>
+      <div class="logo-prev">
+        <div><div class="lp-label">Navbar Preview</div><div class="lp-box" id="lpNav"></div></div>
+        <div><div class="lp-label">Footer Preview</div><div class="lp-box" id="lpFoot"></div></div>
+      </div>
+      <div class="box">
+        <div class="box-h"><span>Logo Type</span></div>
+        <div style="display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;font-weight:600;color:var(--txt)"><input type="radio" name="logoT" value="text" id="ltText" style="accent-color:var(--p3)" onchange="switchLogoType('text')"> Text Logo</label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;font-weight:600;color:var(--txt)"><input type="radio" name="logoT" value="image" id="ltImg" style="accent-color:var(--p3)" onchange="switchLogoType('image')"> Image Logo</label>
+        </div>
+        <div id="logoTextFields">
+          <div class="fg2">
+            <div class="fg"><label>Logo Text</label><input id="lText" placeholder="BrandQore" oninput="prevLogo()"></div>
+            <div class="fg"><label>Accent Part (colored)</label><input id="lAccent" placeholder="Qore" oninput="prevLogo()"></div>
+          </div>
+        </div>
+        <div id="logoImgFields" style="display:none">
+          <div class="upload-zone small" onclick="document.getElementById('logoFile').click()">
+            <div class="uz-icon">🖼</div><div class="uz-title">Click to upload logo image</div><div class="uz-sub">PNG, SVG, JPG — recommended height 40–60px</div>
+            <input type="file" id="logoFile" accept="image/*" onchange="loadLogoImg(event)">
+            <img class="img-preview" id="logoImgPrev" alt="Logo preview">
+          </div>
+          <div style="margin-top:10px;display:flex;gap:10px"><button class="btn btn-g btn-sm" onclick="clearLogoImg()">✕ Remove Image</button></div>
+        </div>
+      </div>
+      <button class="btn btn-v" onclick="saveLogo()">💾 Save Logo</button>
+    </div>
+
+    <!-- ═══ SETTINGS ═══ -->
+    <div class="panel" id="panel-settings">
+      <div class="ph"><h2>Settings</h2><p>Site metadata, favicon and data management</p></div>
+
+      <!-- 🔥 FIREBASE LIVE SYNC -->
+      <div class="box" style="border-color:rgba(251,146,60,0.35);background:linear-gradient(135deg,rgba(251,146,60,0.05),rgba(239,68,68,0.04))">
+        <div class="box-h"><span style="color:#fb923c">🔥 Firebase Live Sync</span> <span id="fbStatusBadge" style="font-size:11px;padding:3px 10px;border-radius:10px;font-weight:700"></span></div>
+        <p style="font-size:12px;color:var(--mu);margin-bottom:16px;line-height:1.7">Firebase সেটআপ করলে Admin-এ যা Save করবেন — সাথে সাথে <strong style="color:#fff">সব browser, সব device-এ</strong> দেখাবে। সম্পূর্ণ বিনামূল্যে।</p>
+        <div id="fbSetupGuide" style="background:var(--bg3);border:1px solid rgba(251,146,60,0.2);border-radius:9px;padding:16px;margin-bottom:16px;font-size:12px;color:var(--mu2);line-height:1.9">
+          <div style="font-weight:700;color:#fb923c;margin-bottom:8px">📋 একবারই Setup করুন (৩ মিনিট):</div>
+          <div>১. <a href="https://console.firebase.google.com" target="_blank" style="color:#fb923c">console.firebase.google.com</a> → Google দিয়ে Login করুন</div>
+          <div>২. <strong style="color:#fff">Add project</strong> → যেকোনো নাম দিন → Continue</div>
+          <div>৩. Left menu → <strong style="color:#fff">Build → Realtime Database</strong> → Create database</div>
+          <div>৪. <strong style="color:#fff">"Start in test mode"</strong> select করুন → Enable</div>
+          <div>৫. Database URL কপি করুন (নিচের মতো দেখাবে):<br><code style="color:#fb923c;background:var(--bg2);padding:2px 8px;border-radius:4px">https://your-app-default-rtdb.firebaseio.com</code></div>
+          <div>৬. নিচে URL পেস্ট করে <strong style="color:#fff">Connect</strong> করুন → <code style="color:#4ade80">index.html</code> ডাউনলোড হবে → GitHub-এ upload করুন ✅</div>
+        </div>
+        <div class="fg" style="max-width:560px;margin-bottom:12px">
+          <label>Firebase Database URL</label>
+          <div style="display:flex;gap:8px">
+            <input id="fbUrlInput" placeholder="https://your-app-default-rtdb.firebaseio.com" style="flex:1;background:var(--bg3);border:1px solid rgba(251,146,60,0.3);color:var(--txt);font-size:13px;padding:9px 12px;border-radius:7px;outline:none">
+            <button class="btn" style="background:linear-gradient(135deg,rgba(251,146,60,0.3),rgba(239,68,68,0.2));border:1px solid rgba(251,146,60,0.4);color:#fb923c;white-space:nowrap" onclick="connectFirebase()">🔥 Connect</button>
+          </div>
+        </div>
+        <div id="fbMsg" style="font-size:12px;min-height:18px;margin-bottom:10px"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-v btn-sm" onclick="syncToFirebase()" id="fbSyncBtn" style="display:none">⬆ এখনই Sync করুন</button>
+          <button class="btn btn-r btn-sm" onclick="disconnectFirebase()" id="fbDisBtn" style="display:none">✕ Disconnect</button>
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="box-h"><span>General</span></div>
+        <div class="fg2">
+          <div class="fg"><label>Site Title</label><input id="sTitle" value="project.brandqore — Portfolio"></div>
+          <div class="fg"><label>Domain</label><input id="sDomain" value="project.brandqore"></div>
+        </div>
+      </div>
+
+      <!-- FAVICON -->
+      <div class="box">
+        <div class="box-h"><span>🌐 Favicon</span></div>
+        <p style="font-size:12px;color:var(--mu);margin-bottom:14px">Upload a favicon that appears in the browser tab for both this admin panel and the portfolio site.</p>
+        <div class="upload-zone small" onclick="document.getElementById('faviconFile').click()">
+          <div class="uz-icon">🔖</div>
+          <div class="uz-title">Click to upload favicon</div>
+          <div class="uz-sub">ICO, PNG, SVG — recommended 32×32 or 64×64px</div>
+          <input type="file" id="faviconFile" accept="image/*,.ico" onchange="loadFavicon(event)">
+        </div>
+        <div class="fav-preview" id="favPreview">
+          <img id="favImg" class="fav-img" alt="Favicon">
+          <div class="fav-placeholder" id="favPlaceholder">🔖</div>
+          <div class="fav-info">
+            <strong id="favName">No favicon uploaded</strong>
+            <span id="favSize">Upload an image above to set your favicon</span>
+          </div>
+          <button class="btn btn-r btn-sm" onclick="clearFavicon()" id="favRemoveBtn" style="display:none">✕ Remove</button>
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="box-h"><span>🗄 Data Management</span></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn" style="background:linear-gradient(135deg,rgba(34,197,94,0.25),rgba(16,185,129,0.25));border:1px solid rgba(34,197,94,0.5);color:#4ade80;font-size:14px" onclick="deployFiles()">🚀 Deploy করুন (সবাই দেখবে)</button>
+          <button class="btn btn-g" onclick="exportJSON()">⬇ Export JSON</button>
+          <button class="btn btn-g" onclick="document.getElementById('importFile').click()">⬆ Import JSON</button>
+          <button class="btn btn-r" onclick="confirmReset()">⚠ Reset All Data</button>
+          <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
+        </div>
+        <div style="margin-top:12px;font-size:12px;color:var(--mu);line-height:1.7">
+          <span style="color:#4ade80;font-weight:700">🚀 Deploy করুন</span> বাটনে ক্লিক করলে <code style="background:var(--bg3);padding:1px 6px;border-radius:4px;color:var(--p5)">index.html</code> ও <code style="background:var(--bg3);padding:1px 6px;border-radius:4px;color:var(--p5)">brandqore-admin.html</code> ডাউনলোড হবে — এই ফাইলগুলো Vercel-এ আপলোড করলে <strong style="color:#fff">সবাই চেঞ্জ দেখবে।</strong><br>
+          <span style="color:#f87171;font-weight:600">⚠ Note:</span> Uploaded images/videos are stored as base64 data — large files may affect performance.
+        </div>
+      </div>
+      <br><button class="btn btn-v" onclick="saveSettings()">💾 Save Settings</button>
+    </div>
+
+    <!-- ═══ SECURITY ═══ -->
+    <div class="panel" id="panel-security">
+      <div class="ph"><h2>Security</h2><p>Change admin login credentials</p></div>
+
+      <div class="sec-card">
+        <div class="sec-card-h">🔐 Current Login</div>
+        <div class="fg2">
+          <div class="fg"><label>Current Username</label><input id="curUserDisplay" readonly style="background:var(--bg);cursor:default;color:var(--p5)"></div>
+          <div class="fg"><label>Password</label><input type="password" value="••••••••" readonly style="background:var(--bg);cursor:default;color:var(--mu2)"></div>
+        </div>
+      </div>
+
+      <div class="box">
+        <div class="box-h"><span>✏ Change Username</span></div>
+        <div class="fg" style="max-width:400px">
+          <label>New Username / ID</label>
+          <input id="newUser" placeholder="Enter new username" autocomplete="off">
+        </div>
+        <br><button class="btn btn-g" onclick="changeUsername()">💾 Update Username</button>
+      </div>
+
+      <div class="box">
+        <div class="box-h"><span>🔑 Change Password</span></div>
+        <div class="fg3" style="max-width:600px">
+          <div class="fg">
+            <label>Current Password</label>
+            <input type="password" id="curPwd" placeholder="••••••••" autocomplete="current-password">
+          </div>
+          <div class="fg">
+            <label>New Password</label>
+            <input type="password" id="newPwd" placeholder="New password" autocomplete="new-password" oninput="checkPwdStrength(this.value)">
+            <div class="pwd-strength" id="pwdStrength"></div>
+          </div>
+          <div class="fg">
+            <label>Confirm Password</label>
+            <input type="password" id="cfmPwd" placeholder="Confirm new password" autocomplete="new-password">
+          </div>
+        </div>
+        <br><button class="btn btn-v" onclick="changePassword()">🔐 Update Password</button>
+      </div>
+
+      <div class="box" style="border-color:rgba(239,68,68,0.2)">
+        <div class="box-h"><span style="color:#f87171">⚠ Session</span></div>
+        <p style="font-size:13px;color:var(--mu2);margin-bottom:14px">Credentials are stored securely in your browser's localStorage. Logging out will require you to enter your credentials again.</p>
+        <button class="btn btn-r" onclick="doLogout()">🔓 Logout Now</button>
+      </div>
+    </div>
+
+    <!-- ═══ ACTIVITY LOG ═══ -->
+    <div class="panel" id="panel-activity">
+      <div class="ph"><h2>Activity Log</h2><p>Recent changes made to the portfolio</p></div>
+      <div class="box">
+        <div class="box-h"><span>All Activity (<span id="logCount">0</span>)</span><button class="btn btn-r btn-sm" onclick="clearLog()">🗑 Clear Log</button></div>
+        <div id="fullLog"></div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /lay -->
+</div><!-- /adminApp -->
+
+<!-- Toast -->
+<div class="toast" id="toast">✓ Saved!</div>
+<!-- Confirm Modal -->
+<div class="mb" id="modal"><div class="md"><h3 id="mTitle">Confirm</h3><p id="mMsg">This action cannot be undone.</p><div class="md-btns"><button class="btn btn-r" id="mOk">Confirm</button><button class="btn btn-g" onclick="closeModal()">Cancel</button></div></div></div>
+<!-- Media Lightbox -->
+<div class="lb-ov" id="lbOv" onclick="closeLb(event)"><div class="lb-box"><div class="lb-hd"><div class="lb-hd-t" id="lbTitle">Preview</div><button class="lb-close" onclick="closeLbBtn()">✕</button></div><div class="lb-body" id="lbBody"></div></div></div>
+
+<script>
+/* ─── DEFAULTS ─── */
+const DEF_CAT={"E-commerce":"🛒","Health":"🏥","Gaming":"🎮","Finance":"💼","Education":"🎓","Islamic":"🕌","Food":"🍽️","Travel":"✈️","Interior":"🏠","Agency":"🧑‍💻","Fashion":"👗","Corporate":"🏢","Special":"🌐"};
+const DEF_P=[{n:1,t:"Panjabi Threads Luxury",u:"https://panjabi-threads-luxury.vercel.app/",c:"E-commerce"},{n:2,t:"Sharibari",u:"https://sharibari.vercel.app/",c:"E-commerce"},{n:3,t:"Verdant Roots Marketplace",u:"https://verdant-roots-marketplace.vercel.app/",c:"E-commerce"},{n:4,t:"Legacy Style",u:"https://legacystyle.vercel.app/",c:"E-commerce"},{n:5,t:"Bagista Style Hub",u:"https://bagista-style-hub.vercel.app/",c:"E-commerce"},{n:6,t:"HomeHaven Furniture",u:"https://homehaven-furniture.vercel.app/",c:"E-commerce"},{n:7,t:"Stable Frames Shop",u:"https://stable-frames-shop.vercel.app/",c:"E-commerce"},{n:8,t:"Palette Pathway Shop",u:"https://palette-pathway-shop.vercel.app/",c:"E-commerce"},{n:9,t:"Fan Haven Online",u:"https://fan-haven-online.vercel.app/",c:"E-commerce"},{n:10,t:"Chord Clear Shop",u:"https://chord-clear-shop.vercel.app/",c:"E-commerce"},{n:11,t:"Arong",u:"https://arong-eta.vercel.app/",c:"E-commerce"},{n:12,t:"Evaly",u:"https://evaly-rho.vercel.app/",c:"E-commerce"},{n:13,t:"Food BD",u:"https://foodbd-murex.vercel.app/",c:"E-commerce"},{n:14,t:"Grocer Go BD",u:"https://grocer-go-bd.vercel.app/",c:"E-commerce"},{n:15,t:"Phone Buddy BD",u:"https://phone-buddy-bd.vercel.app/",c:"E-commerce"},{n:16,t:"Aqua Prime Direct",u:"https://aqua-prime-direct.vercel.app/",c:"E-commerce"},{n:17,t:"Ghore Bazar Express",u:"https://ghore-bazar-express.vercel.app/",c:"E-commerce"},{n:18,t:"Cake Confectionery Hub",u:"https://cake-confectionery-hub.vercel.app/",c:"E-commerce"},{n:19,t:"Digital Products",u:"https://digitalprodct-chilekotha.vercel.app/",c:"E-commerce"},{n:20,t:"Rentique Bridal Elegance",u:"https://rentique-bridal-elegance.vercel.app/",c:"E-commerce"},{n:21,t:"Daraz Clone",u:"https://daraz-chilekotha.vercel.app/",c:"E-commerce"},{n:22,t:"Daraz Lovable",u:"https://daraz-chilekotha.lovable.app/",c:"E-commerce"},{n:23,t:"Medicare",u:"https://medicarechilekotha.vercel.app/",c:"Health"},{n:24,t:"A2Z Medicine",u:"https://a2zmedicine.vercel.app/",c:"Health"},{n:25,t:"Meds Buddy BD",u:"https://meds-buddy-bd.vercel.app/",c:"Health"},{n:26,t:"Eye Care Plus",u:"https://eye-care-plus.vercel.app/",c:"Health"},{n:27,t:"Gaming Hub",u:"https://gaminghub-chilekotha.vercel.app/",c:"Gaming"},{n:28,t:"Live Quiz Glow",u:"https://live-quiz-glow.vercel.app/",c:"Gaming"},{n:29,t:"Bank Flow",u:"https://bankflowchilekotha.vercel.app/",c:"Finance"},{n:30,t:"BD Funding Hub",u:"https://bd-funding-hub.vercel.app/",c:"Finance"},{n:31,t:"Closer Co CRM",u:"https://closer-co.vercel.app/",c:"Finance"},{n:32,t:"Gyankosh Library",u:"https://gyankoshlibrary.vercel.app/",c:"Education"},{n:33,t:"IELTS Pro Studio",u:"https://ieltspro-studio.vercel.app/",c:"Education"},{n:34,t:"HSC Mentor AI",u:"https://hsc-mentor-ai.vercel.app/",c:"Education"},{n:35,t:"Skill Forge",u:"https://skillforge-chilekotha.vercel.app/",c:"Education"},{n:36,t:"Bright Deen Kids",u:"https://bright-deen-kids.vercel.app/",c:"Education"},{n:37,t:"Nur Iqra Salah",u:"https://nur-iqra-salah.vercel.app/",c:"Islamic"},{n:38,t:"Tilawa Zen",u:"https://tilawa-zen.vercel.app/",c:"Islamic"},{n:39,t:"Sadaqah Connect",u:"https://sadaqah-connect.vercel.app/",c:"Islamic"},{n:40,t:"Ramadan Guide Daily",u:"https://ramadan-guide-daily.vercel.app/",c:"Islamic"},{n:41,t:"Hajj & Umrah Travel",u:"https://hajjiumrahtravel-chilekotha.vercel.app/",c:"Islamic"},{n:42,t:"Ummah Discover",u:"https://ummah-discover.vercel.app/",c:"Islamic"},{n:43,t:"Imaan Union Hub",u:"https://imaan-union-hub.vercel.app/",c:"Islamic"},{n:44,t:"Radiant Faith Core",u:"https://radiant-faith-core.vercel.app/",c:"Islamic"},{n:45,t:"Iftar Feast Finder",u:"https://iftar-feast-finder.vercel.app/",c:"Food"},{n:46,t:"KFD Iftar Booking",u:"https://kfdiftarbooking.vercel.app/",c:"Food"},{n:47,t:"Rojar Iftar",u:"https://rojar-iftar.vercel.app/",c:"Food"},{n:48,t:"Tea & Coffee",u:"https://teacoffee-kappa.vercel.app/",c:"Food"},{n:49,t:"Quick Tours Connect",u:"https://quick-tours-connect.vercel.app/",c:"Travel"},{n:50,t:"Journey Plus",u:"https://journeyplus.vercel.app/",c:"Travel"},{n:51,t:"Journey Plus 2",u:"https://journey-plus.vercel.app/",c:"Travel"},{n:52,t:"Auto Sphere Co",u:"https://auto-sphere-co.vercel.app/",c:"Travel"},{n:53,t:"SS Home IO Hall",u:"https://sshomeiohall.vercel.app/",c:"Interior"},{n:54,t:"Petal Pursuit",u:"https://petal-pursuit.vercel.app/",c:"Interior"},{n:55,t:"Aroma Aether Art",u:"https://aroma-aether-art.vercel.app/",c:"Interior"},{n:56,t:"Capture Lens Hub",u:"https://capture-lens-hub.vercel.app/",c:"Interior"},{n:57,t:"Content Hub",u:"https://contenthub-chilekotha.vercel.app/",c:"Agency"},{n:58,t:"Artisan Web Studio",u:"https://artisan-web-studio.vercel.app/",c:"Agency"},{n:59,t:"BlendFlow Studio",u:"https://blendflow-studio.vercel.app/",c:"Agency"},{n:60,t:"Evergreen Posts",u:"https://evergreen-posts.vercel.app/",c:"Agency"},{n:61,t:"Echo Flow Craft",u:"https://echo-flow-craft.vercel.app/",c:"Agency"},{n:62,t:"Say Hello Azure",u:"https://say-hello-azure.vercel.app/",c:"Agency"},{n:63,t:"Tanmoy Hasan",u:"https://tanmoyhasan.vercel.app/",c:"Agency"},{n:64,t:"Tanmoy Hasan Shapath",u:"https://tanmoyhasanshapath.vercel.app/",c:"Agency"},{n:65,t:"Chilekotha",u:"https://chilekotha.vercel.app/",c:"Agency"},{n:66,t:"Proposal AI",u:"https://proposalai-nine.vercel.app/",c:"Agency"},{n:67,t:"Pod Hub",u:"https://podhub-chilekotha.vercel.app/",c:"Agency"},{n:68,t:"Aurum",u:"https://aurum-chilekotha.vercel.app/",c:"Fashion"},{n:69,t:"Aurelia",u:"https://aurelia-chilekotha.vercel.app/",c:"Fashion"},{n:70,t:"Elegance",u:"https://elegance-chilekotha.vercel.app/",c:"Fashion"},{n:71,t:"SportZone",u:"https://sportzone-chilekotha.vercel.app/",c:"Fashion"},{n:72,t:"Bloom Bounty",u:"https://bloom-bounty-three.vercel.app/",c:"Fashion"},{n:73,t:"Bloom Blossom Hazel",u:"https://bloom-blossom-hazel.vercel.app/",c:"Fashion"},{n:74,t:"Chilekotha Digital Solutions",u:"https://chilekothadigitalsolutions.vercel.app/",c:"Corporate"},{n:75,t:"Chironos",u:"https://chironos-chilekotha.vercel.app/",c:"Special"},{n:76,t:"BCT Jatrabari",u:"https://bctjatrabari.vercel.app/",c:"Special"},{n:77,t:"Solyman",u:"https://solyman.vercel.app/",c:"Special"},{n:78,t:"BD Election",u:"https://bdeclection.vercel.app/",c:"Special"},{n:79,t:"Love Reveal",u:"https://lovereveal.vercel.app/",c:"Special"}];
+
+/* ─── AUTH ─── */
+const DEF_AUTH = {user:'admin', pass:'admin123'};
+function getAuth(){return JSON.parse(localStorage.getItem('bq_auth')||JSON.stringify(DEF_AUTH))}
+function saveAuth(a){localStorage.setItem('bq_auth',JSON.stringify(a))}
+function isLoggedIn(){return sessionStorage.getItem('bq_session')==='1'}
+
+function doLogin(){
+  const u=document.getElementById('loginUser').value.trim();
+  const p=document.getElementById('loginPass').value;
+  const auth=getAuth();
+  if(u===auth.user&&p===auth.pass){
+    sessionStorage.setItem('bq_session','1');
+    document.getElementById('loginScreen').style.display='none';
+    const app=document.getElementById('adminApp');
+    app.style.display='flex';
+    refresh();
+  } else {
+    const err=document.getElementById('loginErr');
+    err.textContent='❌ Incorrect username or password';
+    setTimeout(()=>err.textContent='',3000);
+  }
+}
+function doLogout(){
+  sessionStorage.removeItem('bq_session');
+  document.getElementById('adminApp').style.display='none';
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('loginUser').value='';
+  document.getElementById('loginPass').value='';
+}
+
+// Check session on load
+window.addEventListener('DOMContentLoaded',()=>{
+  if(isLoggedIn()){
+    document.getElementById('loginScreen').style.display='none';
+    const app=document.getElementById('adminApp');
+    app.style.display='flex';
+    refresh();
+    checkStorageUsage();
+  }
+});
+
+function checkStorageUsage(){
+  try{
+    let total=0;
+    for(let k in localStorage){if(localStorage.hasOwnProperty(k))total+=localStorage[k].length*2;}
+    const pct=Math.round((total/(5*1024*1024))*100);
+    const mb=(total/1024/1024).toFixed(1);
+    if(pct>70){
+      const bar=document.getElementById('storageBar');
+      if(bar)bar.innerHTML=`<div style="padding:6px 16px;background:rgba(239,68,68,0.12);border-bottom:1px solid rgba(239,68,68,0.3);font-size:12px;color:#f87171;display:flex;align-items:center;justify-content:center;gap:8px">⚠️ Storage ${pct}% পূর্ণ (${mb}MB/~5MB) — নতুন ছবি সেভ নাও হতে পারে। ফাইল আপলোডের বদলে <strong>URL লিংক</strong> ব্যবহার করুন। <button onclick="this.parentElement.parentElement.remove()" style="background:none;border:1px solid rgba(239,68,68,0.4);color:#f87171;padding:1px 8px;border-radius:4px;cursor:pointer;font-size:11px">✕</button></div>`;
+    }
+  }catch(e){}
+}
+
+/* ══════════════════════════════════════
+   🔥 FIREBASE CONFIG
+   ══════════════════════════════════════ */
+let FB_CFG = JSON.parse(localStorage.getItem('bq_firebase_config') || JSON.stringify({databaseURL:'https://portfolio-92184-default-rtdb.firebaseio.com'}));
+function getFbUrl(){ return 'https://portfolio-92184-default-rtdb.firebaseio.com/bq.json'; }
+
+/* ─── STATE ─── */
+let P    = JSON.parse(localStorage.getItem('bq_projects') || JSON.stringify(DEF_P));
+let CATS = JSON.parse(localStorage.getItem('bq_cats')     || JSON.stringify(DEF_CAT));
+let SET  = JSON.parse(localStorage.getItem('bq_settings') || JSON.stringify({logoType:'text',logoText:'BrandQore',logoAccent:'Qore',logoImg:'',footerCopy:'© 2025 BrandQore Digital Solutions. All rights reserved.',favicon:''}));
+let HERO = JSON.parse(localStorage.getItem('bq_hero')     || JSON.stringify({h1:'Where Creativity',h2:'Meets Growth.',sub:''}));
+let LOG  = JSON.parse(localStorage.getItem('bq_log')      || '[]');
+let _tempImg=null,_tempVideo=null,_mediaMode='img',_selectedRows=new Set();
+let _tempImages=[]; // array of base64 for multi-image gallery
+let _tempVideos=[]; // array of {type:'url'|'file', src:string, label:string}
+
+/* ══════════════════════════════════════════
+   AUTO IMAGE COMPRESSION
+   Canvas দিয়ে সব ছবি auto-compress হবে
+   Target: max 800px wide, quality 0.82, ~150-300KB
+   ══════════════════════════════════════════ */
+function compressImage(file, maxPx=1200, quality=0.82){
+  return new Promise((resolve)=>{
+    const r=new FileReader();
+    r.onload=ev=>{
+      const img=new Image();
+      img.onload=()=>{
+        let w=img.width, h=img.height;
+        // Scale down if larger than maxPx
+        if(w>maxPx||h>maxPx){
+          if(w>h){h=Math.round(h*(maxPx/w));w=maxPx;}
+          else{w=Math.round(w*(maxPx/h));h=maxPx;}
+        }
+        const canvas=document.createElement('canvas');
+        canvas.width=w; canvas.height=h;
+        const ctx=canvas.getContext('2d');
+        ctx.drawImage(img,0,0,w,h);
+        const compressed=canvas.toDataURL('image/jpeg',quality);
+        // If original was PNG with transparency or smaller than compressed, keep original
+        const origSize=ev.target.result.length;
+        const compSize=compressed.length;
+        resolve(compSize<origSize ? compressed : ev.target.result);
+      };
+      img.src=ev.target.result;
+    };
+    r.readAsDataURL(file);
+  });
+}
+
+function fmtKB(b64){return((b64.length*0.75)/1024).toFixed(0)+'KB';}
+
+/* ── Single Image ── */
+async function loadImg(e){
+  const file=e.target.files[0];if(!file)return;
+  const info=document.getElementById('imgInfo');
+  info.style.display='block';info.textContent='⏳ Compressing...';
+  const compressed=await compressImage(file);
+  _tempImg=compressed;
+  const prev=document.getElementById('imgPreview');
+  document.getElementById('imgPreviewEl').src=_tempImg;
+  prev.style.display='block';
+  info.textContent=`📷 ${file.name} — ${fmtKB(compressed)} (compressed ✓)`;
+  e.target.value='';
+}
+function clearImg(){_tempImg=null;document.getElementById('imgPreview').style.display='none';document.getElementById('imgFile').value='';document.getElementById('imgInfo').style.display='none'}
+
+/* ── Multi Image ── */
+async function loadMultiImg(e){
+  const files=Array.from(e.target.files);
+  if(!files.length)return;
+  const count=document.getElementById('multiImgCount');
+  count.textContent=`⏳ ${files.length} টি ছবি compress হচ্ছে...`;
+  let done=0;
+  for(const file of files){
+    const compressed=await compressImage(file);
+    _tempImages.push(compressed);
+    done++;
+    count.textContent=`⏳ ${done}/${files.length} compress হচ্ছে...`;
+  }
+  renderMultiImgGrid();
+  document.getElementById('multiImgFile').value='';
+}
+function renderMultiImgGrid(){
+  const grid=document.getElementById('multiImgGrid');
+  const count=document.getElementById('multiImgCount');
+  if(!_tempImages.length){grid.innerHTML='';count.textContent='';return;}
+  grid.innerHTML=_tempImages.map((src,i)=>`
+    <div style="position:relative;border-radius:8px;overflow:hidden;border:1px solid var(--line);background:#0a0814;aspect-ratio:1">
+      <img src="${src}" style="width:100%;height:100%;object-fit:contain;display:block">
+      <button onclick="removeMultiImg(${i})" style="position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;background:rgba(220,38,38,0.9);border:none;color:#fff;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">✕</button>
+      ${i===0?'<span style="position:absolute;bottom:4px;left:4px;font-size:9px;background:rgba(124,58,237,0.9);color:#fff;padding:2px 6px;border-radius:4px">Cover</span>':''}
+    </div>
+  `).join('');
+  count.textContent=`📷 ${_tempImages.length} টি ছবি — প্রথমটি কার্ডে দেখাবে`;
+}
+function removeMultiImg(i){_tempImages.splice(i,1);renderMultiImgGrid();}
+function clearMultiImgs(){_tempImages=[];renderMultiImgGrid();}
+
+/* ── Multi Video ── */
+function getEmbedUrl(raw){
+  let url=raw.trim();
+  // YouTube
+  const ytMatch=url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&?/]+)/);
+  if(ytMatch)return{embed:`https://www.youtube.com/embed/${ytMatch[1]}?autoplay=0`,label:`YouTube: ${ytMatch[1]}`};
+  // Vimeo
+  const viMatch=url.match(/vimeo\.com\/(\d+)/);
+  if(viMatch)return{embed:`https://player.vimeo.com/video/${viMatch[1]}`,label:`Vimeo: ${viMatch[1]}`};
+  // Facebook video
+  if(url.includes('facebook.com')||url.includes('fb.watch')){
+    const fbEmbed=`https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false&autoplay=false`;
+    return{embed:fbEmbed,label:`Facebook Video`};
+  }
+  // Google Drive
+  const gdMatch=url.match(/drive\.google\.com\/file\/d\/([^/]+)/);
+  if(gdMatch)return{embed:`https://drive.google.com/file/d/${gdMatch[1]}/preview`,label:`Drive: ${gdMatch[1].slice(0,12)}...`};
+  // Direct video file or other URL — use as-is in iframe
+  return{embed:url,label:url.length>50?url.slice(0,47)+'...':url};
+}
+
+function addVideoUrl(){
+  const input=document.getElementById('videoUrlInput');
+  const raw=input.value.trim();
+  if(!raw){alert('একটি URL লিখুন');return;}
+  const {embed,label}=getEmbedUrl(raw);
+  _tempVideos.push({type:'url',src:embed,raw:raw,label});
+  input.value='';
+  renderVideoList();
+}
+
+function loadVideoFile(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  document.getElementById('videoFile').value='';
+  const idx=_tempVideos.length;
+  _tempVideos.push({type:'file',src:'',label:`📁 ${file.name} (${(file.size/1024/1024).toFixed(1)}MB) — লোড হচ্ছে...`,_loading:true});
+  renderVideoList();
+  const r=new FileReader();
+  r.onload=ev=>{
+    _tempVideos[idx].src=ev.target.result;
+    _tempVideos[idx].base64=ev.target.result;
+    _tempVideos[idx].label=`📁 ${file.name} (${(file.size/1024/1024).toFixed(1)}MB) ✓`;
+    _tempVideos[idx]._loading=false;
+    renderVideoList();
+  };
+  r.onerror=()=>{
+    _tempVideos[idx].label=`📁 ${file.name} — ❌ লোড ব্যর্থ`;
+    _tempVideos[idx]._loading=false;
+    renderVideoList();
+  };
+  r.readAsDataURL(file);
+}
+
+function renderVideoList(){
+  const list=document.getElementById('videoList');
+  const count=document.getElementById('videoCount');
+  if(!_tempVideos.length){list.innerHTML='';count.textContent='';return;}
+  list.innerHTML=_tempVideos.map((v,i)=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg3);border:1px solid var(--line);border-radius:8px;margin-bottom:6px;${v._loading?'opacity:0.6':''}">
+      <span style="font-size:18px">${v.type==='file'?'📁':'🔗'}</span>
+      <span style="flex:1;font-size:12px;color:var(--txt);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${v.label}</span>
+      ${i===0?'<span style="font-size:10px;background:rgba(124,58,237,0.2);border:1px solid var(--p3);color:var(--p4);padding:2px 7px;border-radius:4px">Cover</span>':''}
+      ${v._loading?'<span style="font-size:10px;color:var(--mu)">⏳</span>':''}
+      <button onclick="removeVideo(${i})" style="width:24px;height:24px;border-radius:50%;background:rgba(220,38,38,0.8);border:none;color:#fff;font-size:12px;cursor:pointer;flex-shrink:0">✕</button>
+    </div>
+  `).join('');
+  const loadingCount=_tempVideos.filter(v=>v._loading).length;
+  count.textContent=loadingCount>0
+    ? `⏳ ${loadingCount} টি লোড হচ্ছে... অপেক্ষা করুন তারপর Save করুন`
+    : `🎬 ${_tempVideos.length} টি ভিডিও — প্রথমটি কার্ডে দেখাবে`;
+}
+function removeVideo(i){_tempVideos.splice(i,1);renderVideoList();}
+function clearVideoList(){_tempVideos=[];renderVideoList();}
+
+/* keep legacy clearVideo for other callers */
+function clearVideo(){clearVideoList();document.getElementById('videoUrlInput')&&(document.getElementById('videoUrlInput').value='');clearVidThumb();}
+function syncVideoUrl(){} /* no-op, kept for compat */
+
+/* ── Video Thumbnail ── */
+let _tempVidThumb=null;
+async function loadVidThumb(e){
+  const file=e.target.files[0];if(!file)return;
+  const compressed=await compressImage(file,800,0.85);
+  _tempVidThumb=compressed;
+  document.getElementById('vidThumbImg').src=_tempVidThumb;
+  document.getElementById('vidThumbPreview').style.display='block';
+  e.target.value='';
+}
+function clearVidThumb(){
+  _tempVidThumb=null;
+  document.getElementById('vidThumbPreview').style.display='none';
+  document.getElementById('vidThumbImg').src='';
+  document.getElementById('vidThumbFile').value='';
+}
+
+function save(){
+  // ── localStorage (backup) ──
+  try{
+    localStorage.setItem('bq_projects',JSON.stringify(P));
+    localStorage.setItem('bq_cats',JSON.stringify(CATS));
+    localStorage.setItem('bq_settings',JSON.stringify(SET));
+    localStorage.setItem('bq_hero',JSON.stringify(HERO));
+    localStorage.setItem('bq_log',JSON.stringify(LOG.slice(0,100)));
+  }catch(e){
+    if(e.name==='QuotaExceededError'||e.code===22){
+      const lean=P.map(p=>{const c={...p};delete c.imgSrc;delete c.images;delete c.videoSrc;delete c.videos;return c;});
+      try{
+        localStorage.setItem('bq_projects',JSON.stringify(lean));
+        localStorage.setItem('bq_cats',JSON.stringify(CATS));
+        localStorage.setItem('bq_settings',JSON.stringify(SET));
+        localStorage.setItem('bq_hero',JSON.stringify(HERO));
+        localStorage.setItem('bq_log',JSON.stringify(LOG.slice(0,20)));
+        showQuotaWarning();
+      }catch(e2){
+        alert('❌ Storage পূর্ণ হয়ে গেছে। Browser cache clear করুন অথবা কিছু project delete করুন।');
+      }
+    }
+  }
+
+  // ── Firebase (live sync) ──
+  const fbUrl = getFbUrl();
+  if(fbUrl){
+    const payload = {projects:P, cats:CATS, settings:SET, hero:HERO};
+    fetch(fbUrl, {
+      method:'PUT',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    })
+    .then(r=>{ if(!r.ok) throw new Error(r.status); updateFbStatus('connected'); })
+    .catch(err=>{ updateFbStatus('error', err.message); });
+  }
+}
+function showQuotaWarning(){
+  let w=document.getElementById('quotaWarn');
+  if(!w){w=document.createElement('div');w.id='quotaWarn';w.style.cssText='position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:999;background:rgba(220,38,38,0.95);border:1px solid rgba(239,68,68,0.5);color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;max-width:480px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.4)';document.body.appendChild(w);}
+  w.innerHTML='⚠️ Storage limit পূর্ণ! ছবি/ভিডিও সেভ হয়নি। বড় base64 ফাইলের বদলে <strong>URL লিংক</strong> ব্যবহার করুন অথবা কিছু project delete করুন। <button onclick="this.parentElement.remove()" style="margin-left:10px;background:none;border:1px solid rgba(255,255,255,0.5);color:#fff;padding:2px 8px;border-radius:5px;cursor:pointer">✕</button>';
+}
+
+/* ─── LOG ─── */
+function addLog(type,msg){LOG.unshift({type,msg,time:new Date().toLocaleString()});if(LOG.length>100)LOG=LOG.slice(0,100);save()}
+function renderLogItems(items,container){
+  if(!items.length){container.innerHTML='<div style="color:var(--mu);font-size:13px;padding:12px 0">No activity yet.</div>';return}
+  container.innerHTML=items.map(l=>`<div class="alog-item"><div class="alog-dot ${l.type}"></div><div class="alog-txt">${l.msg}</div><div class="alog-time">${l.time}</div></div>`).join('');
+}
+
+/* ─── NAV ─── */
+function go(el){document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('on'));document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));el.classList.add('on');document.getElementById('panel-'+el.dataset.p).classList.add('on');refresh()}
+function goActivity(){document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('on'));document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));document.querySelector('[data-p="activity"]').classList.add('on');document.getElementById('panel-activity').classList.add('on');refresh()}
+
+/* ─── REFRESH ─── */
+function refresh(){
+  const t=P.length,c=Object.keys(CATS).length;
+  const webCnt=P.filter(p=>(!p.type||p.type==='website')).length;
+  const gfxCnt=P.filter(p=>p.type==='graphic').length;
+  const vidCnt=P.filter(p=>p.type==='video').length;
+  document.getElementById('dTot').textContent=t;
+  document.getElementById('dCats').textContent=c;
+  document.getElementById('sbN').textContent=t;
+  document.getElementById('ptN').textContent=t;
+  if(document.getElementById('dWeb'))document.getElementById('dWeb').textContent=webCnt;
+  if(document.getElementById('dGfx'))document.getElementById('dGfx').textContent=gfxCnt;
+  if(document.getElementById('dVid'))document.getElementById('dVid').textContent=vidCnt;
+  renderDash();renderPtbl(P);renderCatList();populateSel();populateFilterSel();loadHero();loadLogo();loadFaviconPreview();loadSecurityPage();loadFbStatus();
+  renderFullLog();renderDashLog();
+  animateNums();
+  // Apply favicon
+  if(SET.favicon)document.getElementById('faviconEl').href=SET.favicon;
+}
+
+function animateNums(){document.querySelectorAll('.sc-n').forEach(el=>{const target=parseInt(el.textContent);if(isNaN(target))return;let cur=0;const step=Math.max(1,Math.floor(target/20));const timer=setInterval(()=>{cur=Math.min(cur+step,target);el.textContent=cur;if(cur>=target)clearInterval(timer)},30)})}
+
+/* ─── DASHBOARD ─── */
+function renderDash(){
+  const max=Math.max(...Object.keys(CATS).map(c=>P.filter(p=>p.c===c).length),1);
+  document.getElementById('barChart').innerHTML=Object.keys(CATS).map(c=>{const n=P.filter(p=>p.c===c).length;const h=Math.max(Math.round((n/max)*100),4);return`<div class="bar-item"><div class="bar" style="height:${h}px"><div class="bar-tooltip">${CATS[c]||''} ${c}: ${n}</div></div><div class="bar-n">${n}</div><div class="bar-lbl">${c.slice(0,5)}</div></div>`}).join('');
+  const rows=P.slice(-8).reverse();
+  document.getElementById('dashTbl').innerHTML=`<thead><tr><th>#</th><th>Title</th><th>Type</th><th>Category</th><th>URL</th></tr></thead><tbody>${rows.map(p=>`<tr><td class="tc">#${String(p.n).padStart(2,'0')}</td><td class="tb2">${p.t}</td><td>${typeBadge(p)}</td><td><span class="tpill">${CATS[p.c]||''} ${p.c}</span></td><td class="tu">${p.u?p.u.replace('https://',''):''}</td></tr>`).join('')}</tbody>`;
+}
+function renderDashLog(){renderLogItems(LOG.slice(0,5),document.getElementById('dashLog'))}
+function renderFullLog(){const el=document.getElementById('fullLog');if(!el)return;document.getElementById('logCount').textContent=LOG.length;renderLogItems(LOG,el)}
+function clearLog(){LOG=[];save();refresh();toast('Activity log cleared.')}
+
+/* ─── MEDIA / TYPE BADGE ─── */
+function mediaBadge(p){if(p.videoSrc)return`<span style="font-size:10px;font-weight:700;color:#f87171;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);padding:2px 7px;border-radius:8px">▶ Video</span>`;if(p.imgSrc)return`<span style="font-size:10px;font-weight:700;color:#4ade80;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);padding:2px 7px;border-radius:8px">📷 Image</span>`;return`<span style="font-size:10px;color:var(--mu)">iframe</span>`}
+function typeBadge(p){const t=p.type||'website';if(t==='graphic')return`<span class="ttype ttype-g">🎨 Design</span>`;if(t==='video')return`<span class="ttype ttype-v">🎬 Video</span>`;return`<span class="ttype ttype-w">🌐 Web</span>`}
+
+/* ─── PROJECTS TABLE ─── */
+function renderPtbl(list){
+  document.getElementById('ptN').textContent=list.length;
+  _selectedRows.clear();document.getElementById('bulkBar').classList.remove('show');
+  document.getElementById('ptbl').innerHTML=`<thead><tr><th><input type="checkbox" onchange="toggleAllRows(this)" style="accent-color:var(--p3)"></th><th>#</th><th>Preview</th><th>Title</th><th>Type</th><th>Category</th><th>Media</th><th>URL</th><th>Actions</th></tr></thead><tbody>${list.map(p=>{const ri=P.indexOf(p);const thumb=p.imgSrc?`<img class="media-thumb" src="${p.imgSrc}" onclick="previewMedia(${ri})" title="View image">`:p.videoSrc?`<div class="media-thumb-video" onclick="previewMedia(${ri})" title="View video">▶</div>`:`<div class="media-thumb-video" onclick="previewLive('${p.u}','${p.t}')" title="Live preview" style="background:rgba(124,58,237,0.1);border-color:var(--line2);color:var(--p4)">🌐</div>`;return`<tr><td><input type="checkbox" class="row-cb" data-idx="${ri}" onchange="toggleRow(this,${ri})" style="accent-color:var(--p3)"></td><td class="tc">#${String(p.n).padStart(2,'0')}</td><td>${thumb}</td><td class="tb2">${p.t}</td><td>${typeBadge(p)}</td><td><span class="tpill">${CATS[p.c]||''} ${p.c}</span></td><td>${mediaBadge(p)}</td><td class="tu"><a href="${p.u||'#'}" target="_blank" style="color:var(--mu2)">${p.u?p.u.replace('https://',''):'-'}</a></td><td class="tact"><button class="btn btn-g btn-sm" onclick="editP(${ri})">✏ Edit</button><button class="btn btn-r btn-sm" onclick="confirmDel(${ri})">🗑</button></td></tr>`}).join('')}</tbody>`;
+}
+
+/* ─── BULK SELECT ─── */
+function toggleAllRows(cb){document.querySelectorAll('.row-cb').forEach(r=>{r.checked=cb.checked;const idx=parseInt(r.dataset.idx);if(cb.checked)_selectedRows.add(idx);else _selectedRows.delete(idx)});updateBulkBar()}
+function toggleRow(cb,idx){if(cb.checked)_selectedRows.add(idx);else _selectedRows.delete(idx);updateBulkBar()}
+function updateBulkBar(){const bar=document.getElementById('bulkBar');if(_selectedRows.size>0){bar.classList.add('show');document.getElementById('bulkCount').textContent=_selectedRows.size}else bar.classList.remove('show')}
+function clearSelection(){_selectedRows.clear();updateBulkBar();document.querySelectorAll('.row-cb').forEach(r=>r.checked=false)}
+function bulkDelete(){if(!_selectedRows.size)return;const idxs=[..._selectedRows].sort((a,b)=>b-a);idxs.forEach(i=>{addLog('del',`Deleted <strong>${P[i].t}</strong>`);P.splice(i,1)});clearSelection();save();refresh();toast(`Deleted ${idxs.length} projects.`)}
+
+/* ─── FILTER ─── */
+function populateFilterSel(){const sel=document.getElementById('filterCat');const val=sel.value;sel.innerHTML='<option value="">All Categories</option>'+Object.keys(CATS).map(c=>`<option value="${c}">${CATS[c]} ${c}</option>`).join('');sel.value=val}
+function applyFilters(){const cat=document.getElementById('filterCat')?.value||'';const type=document.getElementById('filterType')?.value||'';const q=document.getElementById('searchInput')?.value||'';let list=P;if(type)list=list.filter(p=>(p.type||'website')===type);if(cat)list=list.filter(p=>p.c===cat);if(q)list=list.filter(p=>p.t.toLowerCase().includes(q.toLowerCase())||p.c.toLowerCase().includes(q.toLowerCase())||(p.u||'').toLowerCase().includes(q.toLowerCase()));renderPtbl(list)}
+function searchP(q){applyFilters()}
+
+/* ─── TYPE OPT SELECT ─── */
+document.addEventListener('change',e=>{if(e.target.name==='ptype'){document.querySelectorAll('.type-opt').forEach(o=>o.classList.toggle('on',o.querySelector('input').value===e.target.value));const isGraphic=e.target.value==='graphic';document.getElementById('multiImgTabBtn').style.display=isGraphic?'':'none';if(isGraphic){const btns=document.querySelectorAll('.mt-btn');btns.forEach(b=>b.classList.remove('on'));document.getElementById('multiImgTabBtn').classList.add('on');switchMediaTab('multiimg',document.getElementById('multiImgTabBtn'))}}});
+
+/* ─── MEDIA TABS ─── */
+function switchMediaTab(mode,btn){_mediaMode=mode;document.querySelectorAll('.mt-btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');document.querySelectorAll('.mt-panel').forEach(p=>p.classList.remove('on'));document.getElementById('mt-'+mode).classList.add('on')}
+
+/* ─── IMAGE UPLOAD ─── */
+/* loadImg and clearImg defined above with compression */
+
+/* ─── CURRENT MEDIA ─── */
+function showCurrentMedia(p){
+  const wrap=document.getElementById('currentMediaWrap'),inner=document.getElementById('currentMediaInner'),lbl=document.getElementById('currentMediaLbl');
+  if(p.videos&&p.videos.length){
+    inner.innerHTML=p.videos.map((v,i)=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 12px;background:var(--bg3);${i>0?'border-top:1px solid var(--line)':''}"><span style="font-size:14px">${v.type==='file'?'📁':'🔗'}</span><span style="font-size:12px;color:var(--txt);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${v.label||v.src.slice(0,50)}</span>${i===0?'<span style="font-size:9px;background:rgba(124,58,237,0.2);border:1px solid var(--p3);color:var(--p4);padding:2px 6px;border-radius:4px">Cover</span>':''}</div>`).join('');
+    lbl.textContent=`🎬 Current Videos (${p.videos.length})`;wrap.classList.add('show');
+  } else if(p.videoSrc){
+    // legacy single video
+    const isEmbed=p.videoSrc.includes('youtube')||p.videoSrc.includes('facebook')||p.videoSrc.includes('vimeo')||p.videoSrc.includes('drive.google');
+    if(isEmbed){inner.innerHTML=`<iframe src="${p.videoSrc}" style="width:100%;height:140px;border:none" allowfullscreen></iframe>`}
+    else{inner.innerHTML=`<video autoplay muted loop playsinline style="width:100%;max-height:140px;object-fit:contain;background:#0a0814"><source src="${p.videoSrc}"></video>`}
+    lbl.textContent='▶ Current Video';wrap.classList.add('show');
+  } else if(p.images&&p.images.length){
+    inner.innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:6px;padding:10px">${p.images.slice(0,6).map(s=>`<img src="${s}" style="width:100%;aspect-ratio:1;object-fit:contain;border-radius:6px;background:#0a0814;border:1px solid var(--line)">`).join('')}${p.images.length>6?`<div style="display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--mu);font-weight:700">+${p.images.length-6} more</div>`:''}</div>`;
+    lbl.textContent=`🖼 Current Gallery (${p.images.length} images)`;wrap.classList.add('show');
+  } else if(p.imgSrc){
+    inner.innerHTML=`<img src="${p.imgSrc}" style="width:100%;max-height:220px;object-fit:contain;background:#0a0814;display:block">`;
+    lbl.textContent='📷 Current Image';wrap.classList.add('show');
+  } else wrap.classList.remove('show');
+}
+function clearCurrentMedia(){const ei=document.getElementById('ei').value;if(ei!==''){const p=P[parseInt(ei)];p.imgSrc=undefined;p.videoSrc=undefined;p.images=undefined;p.videos=undefined;save()}document.getElementById('currentMediaWrap').classList.remove('show');clearImg();clearVideo();toast('Media removed. Save to confirm.')}
+
+/* ─── ADD / EDIT ─── */
+function populateSel(){document.getElementById('fc').innerHTML=Object.keys(CATS).map(c=>`<option value="${c}">${CATS[c]} ${c}</option>`).join('')}
+function editP(i){
+  const p=P[i];
+  document.getElementById('ei').value=i;
+  document.getElementById('ft').value=p.t;
+  document.getElementById('fu').value=p.u||'';
+  document.getElementById('fc').value=p.c;
+  document.getElementById('fn').value=p.n;
+  document.getElementById('fd').value=p.d||'';
+  document.getElementById('addH').textContent='✏ Edit Project';
+  // Set type
+  const ptype=p.type||'website';
+  document.querySelectorAll('input[name="ptype"]').forEach(r=>{r.checked=r.value===ptype;r.closest('.type-opt').classList.toggle('on',r.value===ptype)});
+  // Show/hide multi tab
+  const isGraphic=ptype==='graphic';
+  document.getElementById('multiImgTabBtn').style.display=isGraphic?'':'none';
+  clearImg();clearVideo();clearMultiImgs();clearVideoList();clearVidThumb();_tempImg=null;
+  // Load existing video thumbnail if editing
+  if((p.videos&&p.videos.length||p.videoSrc)&&p.imgSrc){
+    _tempVidThumb=p.imgSrc;
+    document.getElementById('vidThumbImg').src=p.imgSrc;
+    document.getElementById('vidThumbPreview').style.display='block';
+  }
+  document.getElementById('multiImgTabBtn').style.display=isGraphic?'':'none';
+  showCurrentMedia(p);
+
+  if(p.videos&&p.videos.length){
+    _tempVideos=p.videos.map(v=>({...v}));renderVideoList();
+    switchMediaTab('video',document.querySelectorAll('.mt-btn')[isGraphic?2:1]);
+  } else if(p.videoSrc){
+    // legacy single video — convert to videos array
+    _tempVideos=[{type:'url',src:p.videoSrc,label:p.videoSrc.length>50?p.videoSrc.slice(0,47)+'...':p.videoSrc,raw:p.videoSrc}];
+    renderVideoList();
+    switchMediaTab('video',document.querySelectorAll('.mt-btn')[isGraphic?2:1]);
+  } else if(isGraphic&&p.images&&p.images.length){
+    _tempImages=p.images.slice();renderMultiImgGrid();
+    switchMediaTab('multiimg',document.getElementById('multiImgTabBtn'));
+  } else if(p.imgSrc){
+    switchMediaTab('img',document.querySelectorAll('.mt-btn')[0]);
+  } else {
+    switchMediaTab('none',isGraphic?document.querySelectorAll('.mt-btn')[3]:document.querySelectorAll('.mt-btn')[2]);
+  }
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('on'));document.querySelectorAll('.panel').forEach(pp=>pp.classList.remove('on'));document.querySelector('[data-p="add"]').classList.add('on');document.getElementById('panel-add').classList.add('on');
+}
+
+function saveP(){
+  const ei=document.getElementById('ei').value;
+  const t=document.getElementById('ft').value.trim();
+  const u=document.getElementById('fu').value.trim();
+  const c=document.getElementById('fc').value;
+  const n=parseInt(document.getElementById('fn').value)||P.length+1;
+  const d=document.getElementById('fd').value.trim();
+  const ptype=document.querySelector('input[name="ptype"]:checked')?.value||'website';
+  if(!t||!c){alert('Title and Category are required.');return}
+  let imgSrc,videoSrc,images,videos;
+
+  if(_mediaMode==='img'){
+    if(_tempImg) imgSrc=_tempImg;
+    else if(ei!=='') imgSrc=P[parseInt(ei)].imgSrc;
+  } else if(_mediaMode==='multiimg'){
+    if(_tempImages.length){
+      images=_tempImages.slice();
+      // DO NOT set imgSrc here — portfolio uses images[] directly
+    } else if(ei!==''){
+      images=P[parseInt(ei)].images;
+    }
+  } else if(_mediaMode==='video'){
+    // Video thumbnail
+    if(_tempVidThumb) imgSrc=_tempVidThumb;
+    else if(ei!=='') imgSrc=P[parseInt(ei)].imgSrc; // keep existing thumbnail
+    if(_tempVideos.length){
+      // Check if any file is still loading
+      const stillLoading=_tempVideos.filter(v=>v._loading);
+      if(stillLoading.length){alert(`⏳ ${stillLoading.length} টি ভিডিও এখনো লোড হচ্ছে। একটু অপেক্ষা করুন তারপর আবার Save করুন।`);return;}
+      // Only use videos that have valid src (base64 or embed URL)
+      const validVideos=_tempVideos.filter(v=>v.src&&v.src.length>0);
+      if(!validVideos.length){alert('কোনো valid ভিডিও নেই।');return;}
+      videos=validVideos.map(v=>({type:v.type,src:v.base64||v.src,label:v.label,raw:v.raw||''}));
+      videoSrc=videos[0].src;
+    } else if(ei!==''){
+      videos=P[parseInt(ei)].videos;
+      videoSrc=P[parseInt(ei)].videoSrc;
+    }
+  } else if(_mediaMode==='none'){
+    if(ei!==''){const old=P[parseInt(ei)];imgSrc=old.imgSrc;videoSrc=old.videoSrc;images=old.images;videos=old.videos;}
+  }
+
+  const proj={n,t,u,c,d,type:ptype};
+  if(imgSrc) proj.imgSrc=imgSrc;
+  if(videoSrc) proj.videoSrc=videoSrc;
+  if(images&&images.length) proj.images=images;
+  if(videos&&videos.length) proj.videos=videos;
+
+  // Check estimated size before saving
+  const projSize=JSON.stringify(proj).length;
+  if(projSize>2000000){// >2MB after compression — still warn
+    const mb=(projSize/1024/1024).toFixed(1);
+    if(!confirm(`⚠️ এই project-এ ${mb}MB data আছে।\n\nভিডিও ফাইলের বদলে URL লিংক ব্যবহার করুন।\n\nতবুও Save করতে চান?`))return;
+  }
+
+  const isEdit=ei!=='';
+  if(isEdit){P[parseInt(ei)]=proj;addLog('edit',`Edited <strong>${t}</strong>`)}
+  else{P.push(proj);addLog('add',`Added <strong>${t}</strong> (${CATS[c]||''} ${c} — ${ptype})`)}
+  save();clearF();refresh();toast(isEdit?'Project updated!':'Project added!');
+}
+
+function clearF(){['ft','fu','fn','fd'].forEach(id=>document.getElementById(id).value='');document.getElementById('ei').value='';document.getElementById('addH').textContent='Add New Project';document.getElementById('currentMediaWrap').classList.remove('show');clearImg();clearVideo();clearMultiImgs();clearVideoList();clearVidThumb();_tempImg=null;document.getElementById('multiImgTabBtn').style.display='none';switchMediaTab('img',document.querySelectorAll('.mt-btn')[0]);document.querySelectorAll('input[name="ptype"]').forEach((r,i)=>{r.checked=i===0;r.closest('.type-opt').classList.toggle('on',i===0)})}
+
+/* ─── DELETE ─── */
+let _di=-1;
+function confirmDel(i){_di=i;document.getElementById('mTitle').textContent='Delete Project?';document.getElementById('mMsg').textContent=`"${P[i].t}" will be permanently removed.`;document.getElementById('mOk').onclick=()=>{addLog('del',`Deleted <strong>${P[_di].t}</strong>`);P.splice(_di,1);save();refresh();toast('Deleted.');closeModal()};document.getElementById('modal').classList.add('open')}
+function confirmReset(){document.getElementById('mTitle').textContent='Reset All Data?';document.getElementById('mMsg').textContent='This will restore all 79 default projects and settings.';document.getElementById('mOk').onclick=()=>{P=JSON.parse(JSON.stringify(DEF_P));CATS=JSON.parse(JSON.stringify(DEF_CAT));SET={logoType:'text',logoText:'BrandQore',logoAccent:'Qore',logoImg:'',footerCopy:'© 2025 BrandQore Digital Solutions. All rights reserved.',favicon:''};HERO={h1:'Where Creativity',h2:'Meets Growth.',sub:''};LOG=[];save();refresh();closeModal();toast('Reset to defaults.')};document.getElementById('modal').classList.add('open')}
+function closeModal(){document.getElementById('modal').classList.remove('open')}
+
+/* ─── MEDIA LIGHTBOX ─── */
+function previewMedia(i){const p=P[i];document.getElementById('lbTitle').textContent=p.t;const body=document.getElementById('lbBody');if(p.videoSrc){body.innerHTML=`<video controls autoplay style="max-width:100%;max-height:460px"><source src="${p.videoSrc}">Your browser does not support video.</video>`}else if(p.imgSrc){body.innerHTML=`<img src="${p.imgSrc}" alt="${p.t}" style="max-width:100%;max-height:460px;object-fit:contain">`}document.getElementById('lbOv').classList.add('open')}
+function previewLive(url,title){document.getElementById('lbTitle').textContent=title;document.getElementById('lbBody').innerHTML=`<iframe src="${url}" style="width:100%;height:460px;border:none" title="${title}"></iframe>`;document.getElementById('lbOv').classList.add('open')}
+function closeLb(e){if(e.target===document.getElementById('lbOv'))closeLbBtn()}
+function closeLbBtn(){document.getElementById('lbOv').classList.remove('open');document.getElementById('lbBody').innerHTML=''}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeLbBtn()}});
+
+/* ─── CATEGORIES ─── */
+function renderCatList(){document.getElementById('catList').innerHTML=Object.keys(CATS).map(c=>`<div class="crow"><span class="crow-ico">${CATS[c]||'●'}</span><span class="crow-name">${c}</span><span class="crow-cnt">${P.filter(p=>p.c===c).length} projects</span><button class="btn btn-r btn-sm" onclick="delCat('${c}')">🗑 Remove</button></div>`).join('')}
+function addCat(){const n=document.getElementById('ncn').value.trim(),ic=document.getElementById('nci').value.trim()||'●';if(!n){alert('Enter category name');return}if(CATS[n]){alert('Already exists');return}CATS[n]=ic;document.getElementById('ncn').value='';document.getElementById('nci').value='';addLog('add',`Added category <strong>${ic} ${n}</strong>`);save();refresh();toast('Category added!')}
+function delCat(n){if(P.filter(p=>p.c===n).length>0){alert('Cannot delete: projects use this category.');return}delete CATS[n];addLog('del',`Removed category <strong>${n}</strong>`);save();refresh();toast('Removed.')}
+
+/* ─── HERO ─── */
+function loadHero(){document.getElementById('h1').value=HERO.h1||'';document.getElementById('h2').value=HERO.h2||'';document.getElementById('hsub').value=HERO.sub||'';document.getElementById('hfoot').value=SET.footerCopy||'';prevH()}
+function prevH(){document.getElementById('hp1').textContent=document.getElementById('h1').value||'Where Creativity';document.getElementById('hp2').textContent=document.getElementById('h2').value||'Meets Growth.';document.getElementById('hpsub').textContent=document.getElementById('hsub').value||'A curated showcase of live projects...'}
+function saveHero(){HERO.h1=document.getElementById('h1').value||HERO.h1;HERO.h2=document.getElementById('h2').value||HERO.h2;HERO.sub=document.getElementById('hsub').value;SET.footerCopy=document.getElementById('hfoot').value||SET.footerCopy;save();toast('Hero saved!')}
+
+/* ─── LOGO ─── */
+function loadLogo(){document.getElementById(SET.logoType==='image'?'ltImg':'ltText').checked=true;switchLogoType(SET.logoType);document.getElementById('lText').value=SET.logoText||'BrandQore';document.getElementById('lAccent').value=SET.logoAccent||'';if(SET.logoImg){const prev=document.getElementById('logoImgPrev');prev.src=SET.logoImg;prev.style.display='block'}prevLogo()}
+function switchLogoType(type){document.getElementById('logoTextFields').style.display=type==='text'?'block':'none';document.getElementById('logoImgFields').style.display=type==='image'?'block':'none';prevLogo()}
+function prevLogo(){const type=document.querySelector('input[name="logoT"]:checked')?.value||'text';let html='';if(type==='image'&&SET.logoImg){html=`<img src="${SET.logoImg}" style="height:30px;width:auto;object-fit:contain;">`}else{const f=document.getElementById('lText')?.value||SET.logoText||'BrandQore',a=document.getElementById('lAccent')?.value||'';if(a&&f.toLowerCase().includes(a.toLowerCase())){const i=f.toLowerCase().indexOf(a.toLowerCase());html=`<div class="lp-txt">${f.slice(0,i)}<span>${f.slice(i,i+a.length)}</span>${f.slice(i+a.length)}</div>`}else html=`<div class="lp-txt">${f}</div>`}document.getElementById('lpNav').innerHTML=html;document.getElementById('lpFoot').innerHTML=html}
+function loadLogoImg(e){const file=e.target.files[0];if(!file)return;compressImage(file,400,0.9).then(compressed=>{SET.logoImg=compressed;const prev=document.getElementById('logoImgPrev');prev.src=SET.logoImg;prev.style.display='block';prevLogo()})}
+function clearLogoImg(){SET.logoImg='';document.getElementById('logoImgPrev').style.display='none';document.getElementById('logoFile').value='';prevLogo()}
+function saveLogo(){SET.logoType=document.querySelector('input[name="logoT"]:checked')?.value||'text';SET.logoText=document.getElementById('lText').value||'BrandQore';SET.logoAccent=document.getElementById('lAccent').value||'';save();toast('Logo saved! Refresh portfolio to see changes.')}
+
+/* ─── FAVICON ─── */
+function loadFavicon(e){const file=e.target.files[0];if(!file)return;compressImage(file,128,0.9).then(compressed=>{SET.favicon=compressed;save();loadFaviconPreview();document.getElementById('faviconEl').href=SET.favicon;toast('Favicon saved!')})}
+function loadFaviconPreview(){const img=document.getElementById('favImg'),ph=document.getElementById('favPlaceholder'),nm=document.getElementById('favName'),sz=document.getElementById('favSize'),btn=document.getElementById('favRemoveBtn');if(SET.favicon){img.src=SET.favicon;img.style.display='block';ph.style.display='none';nm.textContent='Favicon active';sz.textContent='Favicon is set and active on both pages';btn.style.display='inline-flex'}else{img.style.display='none';ph.style.display='flex';nm.textContent='No favicon uploaded';sz.textContent='Upload an image above to set your favicon';btn.style.display='none'}}
+function clearFavicon(){SET.favicon='';save();loadFaviconPreview();document.getElementById('faviconEl').href='';toast('Favicon removed.')}
+
+/* ─── FIREBASE FUNCTIONS ─── */
+function updateFbStatus(status, msg){
+  const badge=document.getElementById('fbStatusBadge');
+  const tbFb=document.getElementById('tbFbStatus');
+  const fbMsg=document.getElementById('fbMsg');
+  const syncBtn=document.getElementById('fbSyncBtn');
+  const disBtn=document.getElementById('fbDisBtn');
+  const guide=document.getElementById('fbSetupGuide');
+  if(!badge) return;
+  if(status==='connected'){
+    badge.textContent='✅ Connected — Live Sync চালু';
+    badge.style.cssText='font-size:11px;padding:3px 10px;border-radius:10px;font-weight:700;background:rgba(34,197,94,0.15);color:#4ade80;border:1px solid rgba(34,197,94,0.3)';
+    if(tbFb){tbFb.textContent='🔥 Live Sync চালু';tbFb.style.cssText='display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:6px 12px;border-radius:6px;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);color:#4ade80';}
+    if(fbMsg) fbMsg.innerHTML='<span style="color:#4ade80">✅ Live sync চালু! এখন থেকে save করলে সাথে সাথে সব জায়গায় দেখাবে।</span>';
+    if(syncBtn) syncBtn.style.display='inline-flex';
+    if(disBtn) disBtn.style.display='inline-flex';
+    if(guide) guide.style.display='none';
+  } else if(status==='error'){
+    badge.textContent='❌ Error';
+    badge.style.cssText='font-size:11px;padding:3px 10px;border-radius:10px;font-weight:700;background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.3)';
+    if(tbFb){tbFb.textContent='❌ Firebase Error';tbFb.style.cssText='display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:6px 12px;border-radius:6px;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);color:#f87171';}
+    if(fbMsg) fbMsg.innerHTML=`<span style="color:#f87171">❌ Connection error: ${msg||''}. URL ঠিকমতো দিয়েছেন?</span>`;
+  } else {
+    badge.textContent='⚪ Not Connected';
+    badge.style.cssText='font-size:11px;padding:3px 10px;border-radius:10px;font-weight:700;background:rgba(100,100,100,0.15);color:var(--mu);border:1px solid var(--line)';
+    if(tbFb){tbFb.textContent='⚪ Firebase';tbFb.style.cssText='display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:6px 12px;border-radius:6px;background:rgba(100,100,100,0.1);border:1px solid var(--line);color:var(--mu)';}
+    if(syncBtn) syncBtn.style.display='none';
+    if(disBtn) disBtn.style.display='none';
+    if(guide) guide.style.display='block';
+  }
+}
+
+function loadFbStatus(){
+  const inp=document.getElementById('fbUrlInput');
+  if(inp) inp.value='https://portfolio-92184-default-rtdb.firebaseio.com';
+  updateFbStatus('connected');
+}
+
+function connectFirebase(){
+  const raw=(document.getElementById('fbUrlInput').value||'').trim();
+  if(!raw){ document.getElementById('fbMsg').innerHTML='<span style="color:#f87171">URL লিখুন</span>'; return; }
+  const url=raw.replace(/\/$/,'');
+  document.getElementById('fbMsg').innerHTML='<span style="color:#fb923c">⏳ সংযোগ পরীক্ষা করা হচ্ছে...</span>';
+  fetch(url+'/.json?shallow=true')
+    .then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); })
+    .then(async ()=>{
+      FB_CFG={databaseURL: url};
+      localStorage.setItem('bq_firebase_config', JSON.stringify(FB_CFG));
+      localStorage.setItem('bq_firebase_url', url);
+      updateFbStatus('connected');
+      await syncToFirebase();
+      await generateIndexHtml(url);
+    })
+    .catch(err=>{ updateFbStatus('error', err.message); });
+}
+
+async function generateIndexHtml(fbUrl){
+  try{
+    const resp = await fetch('index.html');
+    let src = await resp.text();
+    src = src.replace(
+      /const FIREBASE_URL = localStorage\.getItem\('bq_firebase_url'\) \|\| '[^']*';/,
+      "const FIREBASE_URL = '" + fbUrl + "';"
+    );
+    const blob = new Blob([src], {type:'text/html'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'index.html';
+    a.click();
+    document.getElementById('mTitle').textContent = '✅ প্রায় হয়ে গেছে!';
+    document.getElementById('mMsg').innerHTML = '<div style="text-align:left;font-size:13px;line-height:2;color:var(--mu2)"><div style="color:#4ade80;font-weight:700;font-size:14px;margin-bottom:8px">মাত্র একটি ধাপ বাকি:</div>ডাউনলোড হওয়া <code style="color:#fb923c;background:var(--bg3);padding:1px 6px;border-radius:4px">index.html</code> ফাইলটি<br><strong style="color:#fff">GitHub repository-তে upload করুন</strong><br><br>এরপর থেকে Admin-এ যা করবেন <strong style="color:#4ade80">সাথে সাথে সবাই দেখবে!</strong> আর কোনো ফাইল নামাতে হবে না। ✅</div>';
+    document.getElementById('mOk').textContent = 'ঠিক আছে!';
+    document.getElementById('mOk').onclick = ()=>closeModal();
+    document.getElementById('modal').classList.add('open');
+  } catch(e){
+    document.getElementById('fbMsg').innerHTML='<span style="color:#f87171">❌ index.html লোড করতে সমস্যা হয়েছে।</span>';
+  }
+}
+
+function syncToFirebase(){
+  const fbUrl=getFbUrl(); if(!fbUrl){ alert('আগে Firebase connect করুন'); return Promise.resolve(); }
+  document.getElementById('fbMsg').innerHTML='<span style="color:#fb923c">⏳ Sync হচ্ছে...</span>';
+  return fetch(fbUrl,{ method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify({projects:P,cats:CATS,settings:SET,hero:HERO}) })
+    .then(r=>{ if(!r.ok) throw new Error(r.status); updateFbStatus('connected'); toast('🔥 Firebase Sync সম্পন্ন! সবাই এখন দেখতে পাবে।'); })
+    .catch(err=>{ updateFbStatus('error', err.message); });
+}
+
+function disconnectFirebase(){
+  FB_CFG=null;
+  localStorage.removeItem('bq_firebase_config');
+  localStorage.removeItem('bq_firebase_url');
+  document.getElementById('fbUrlInput').value='';
+  updateFbStatus('disconnected');
+  document.getElementById('fbMsg').innerHTML='<span style="color:var(--mu)">Firebase disconnect হয়েছে।</span>';
+  toast('Firebase disconnected.');
+}
+
+/* ─── SETTINGS ─── */
+function saveSettings(){save();toast('Settings saved!')}
+
+/* ─── SECURITY ─── */
+function loadSecurityPage(){const auth=getAuth();const el=document.getElementById('curUserDisplay');if(el)el.value=auth.user}
+function changeUsername(){const newU=document.getElementById('newUser').value.trim();if(!newU){alert('Enter a new username');return}const auth=getAuth();auth.user=newU;saveAuth(auth);addLog('edit',`Admin username changed`);loadSecurityPage();document.getElementById('newUser').value='';toast('Username updated!')}
+function checkPwdStrength(v){const bar=document.getElementById('pwdStrength');if(!v){bar.className='pwd-strength';return}if(v.length<6)bar.className='pwd-strength weak';else if(v.length<10)bar.className='pwd-strength ok';else bar.className='pwd-strength strong'}
+function changePassword(){const cur=document.getElementById('curPwd').value;const newP=document.getElementById('newPwd').value;const cfm=document.getElementById('cfmPwd').value;const auth=getAuth();if(cur!==auth.pass){alert('Current password is incorrect');return}if(!newP||newP.length<4){alert('New password must be at least 4 characters');return}if(newP!==cfm){alert('Passwords do not match');return}auth.pass=newP;saveAuth(auth);addLog('edit','Admin password changed');document.getElementById('curPwd').value='';document.getElementById('newPwd').value='';document.getElementById('cfmPwd').value='';document.getElementById('pwdStrength').className='pwd-strength';toast('Password updated!')}
+
+/* ─── DATA IO ─── */
+function exportJSON(){const b=new Blob([JSON.stringify({projects:P,cats:CATS,hero:HERO,settings:SET},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='bq-portfolio-data.json';a.click();toast('Exported!')}
+
+/* ─── DEPLOY: index.html এবং admin.html ডাউনলোড ─── */
+async function deployFiles(){
+  const btn=document.getElementById('deployBtn');
+  btn.textContent='⏳ তৈরি হচ্ছে...';btn.style.pointerEvents='none';
+
+  // ── 1. index.html fetch করে ডেটা inject করা ──
+  let indexSrc;
+  try{
+    const resp=await fetch('index.html');
+    indexSrc=await resp.text();
+  }catch(e){
+    alert('❌ index.html লোড করা যায়নি। দুটো ফাইল একই ফোল্ডারে আছে কিনা দেখুন।');
+    btn.textContent='🚀 Deploy করুন';btn.style.pointerEvents='';return;
+  }
+
+  // Replace DEF_CAT
+  const catJSON=JSON.stringify(CATS);
+  indexSrc=indexSrc.replace(/const DEF_CAT=\{[^;]*\};/,`const DEF_CAT=${catJSON};`);
+
+  // Replace DEF_P (projects array) — multiline-safe
+  const projJSON=JSON.stringify(P);
+  indexSrc=indexSrc.replace(/const DEF_P=\[[^\]]*(?:\][^;]*)*?\];/,`const DEF_P=${projJSON};`);
+
+  // Replace default settings inside localStorage fallback — update the SET defaults
+  const setJSON=JSON.stringify(SET);
+  indexSrc=indexSrc.replace(
+    /localStorage\.getItem\('bq_settings'\)\|\|JSON\.stringify\(\{[^}]*\}\)/,
+    `localStorage.getItem('bq_settings')||JSON.stringify(${setJSON})`
+  );
+
+  // Replace hero defaults
+  const heroJSON=JSON.stringify(HERO);
+  indexSrc=indexSrc.replace(
+    /localStorage\.getItem\('bq_hero'\)\|\|JSON\.stringify\(\{[^}]*\}\)/,
+    `localStorage.getItem('bq_hero')||JSON.stringify(${heroJSON})`
+  );
+
+  // Download index.html
+  const ib=new Blob([indexSrc],{type:'text/html'});
+  const ia=document.createElement('a');ia.href=URL.createObjectURL(ib);ia.download='index.html';ia.click();
+
+  // ── 2. brandqore-admin.html (this file) — নিজে নিজে ডাউনলোড ──
+  await new Promise(r=>setTimeout(r,600));
+
+  // Admin html-এও DEF_P ও DEF_CAT আপডেট করা
+  let adminSrc;
+  try{
+    const resp2=await fetch('brandqore-admin.html');
+    adminSrc=await resp2.text();
+  }catch(e){adminSrc=null;}
+
+  if(adminSrc){
+    adminSrc=adminSrc.replace(/const DEF_CAT=\{[^;]*\};/,`const DEF_CAT=${catJSON};`);
+    adminSrc=adminSrc.replace(/const DEF_P=\[[^\]]*(?:\][^;]*)*?\];/,`const DEF_P=${projJSON};`);
+    const ab=new Blob([adminSrc],{type:'text/html'});
+    const aa=document.createElement('a');aa.href=URL.createObjectURL(ab);aa.download='brandqore-admin.html';aa.click();
+  }
+
+  await new Promise(r=>setTimeout(r,400));
+  btn.textContent='🚀 Deploy করুন';btn.style.pointerEvents='';
+  toast('✅ ২টি ফাইল ডাউনলোড হয়েছে! Vercel-এ আপলোড করুন।');
+
+  // Deploy guide modal
+  document.getElementById('mTitle').textContent='🚀 এখন Vercel-এ Deploy করুন';
+  document.getElementById('mMsg').innerHTML=`
+    <div style="text-align:left;font-size:13px;line-height:1.8;color:var(--mu2)">
+      ডাউনলোড হওয়া ২টি ফাইল:<br>
+      <code style="color:var(--p4)">📄 index.html</code><br>
+      <code style="color:var(--p4)">📄 brandqore-admin.html</code><br><br>
+      <strong style="color:#fff">এই ফাইলগুলো Vercel-এ আপলোড করুন:</strong><br>
+      ১. vercel.com → আপনার project খুলুন<br>
+      ২. Settings → এ যান বা GitHub-এ push করুন<br>
+      ৩. অথবা Vercel CLI: <code style="color:#4ade80">vercel --prod</code><br><br>
+      <span style="color:#4ade80">✅ Deploy হলে সবাই চেঞ্জ দেখবে!</span>
+    </div>
+  `;
+  document.getElementById('mOk').textContent='ঠিক আছে!';
+  document.getElementById('mOk').onclick=()=>closeModal();
+  document.getElementById('modal').classList.add('open');
+}
+function importJSON(e){const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(d.projects)P=d.projects;if(d.cats)CATS=d.cats;if(d.hero)HERO=d.hero;if(d.settings)SET=d.settings;save();refresh();toast('Imported!')}catch{alert('Invalid JSON')}};r.readAsText(file)}
+
+/* ─── TOAST ─── */
+let _tt;
+function toast(m='Saved!'){clearTimeout(_tt);const el=document.getElementById('toast');el.textContent='✓ '+m;el.style.display='block';_tt=setTimeout(()=>el.style.display='none',2800)}
+</script>
+</body>
+</html>
