@@ -543,6 +543,36 @@ tr:hover td{background:rgba(124,58,237,0.04)}
         </div>
       </div>
 
+      <!-- ☁️ CLOUDINARY IMAGE HOSTING -->
+      <div class="box" style="border-color:rgba(56,189,248,0.35);background:linear-gradient(135deg,rgba(56,189,248,0.04),rgba(14,165,233,0.03))">
+        <div class="box-h"><span style="color:#38bdf8">☁️ Cloudinary Image Hosting</span> <span id="cloudStatusBadge" style="font-size:11px;padding:3px 10px;border-radius:10px;font-weight:700"></span></div>
+        <p style="font-size:12px;color:var(--mu);margin-bottom:14px;line-height:1.7">
+          Cloudinary connect করলে ছবি সরাসরি cloud-এ যাবে — localStorage storage limit সমস্যা চিরতরে বন্ধ। বিনামূল্যে <strong style="color:#fff">25GB storage</strong>।
+        </p>
+        <div id="cloudSetupGuide" style="background:var(--bg3);border:1px solid rgba(56,189,248,0.2);border-radius:9px;padding:14px;margin-bottom:14px;font-size:12px;color:var(--mu2);line-height:1.9">
+          <div style="font-weight:700;color:#38bdf8;margin-bottom:6px">📋 একবারই Setup (২ মিনিট):</div>
+          <div>১. <a href="https://cloudinary.com/users/register_free" target="_blank" style="color:#38bdf8">cloudinary.com</a> → Free account তৈরি করুন</div>
+          <div>২. Dashboard-এ <strong style="color:#fff">Cloud Name</strong> কপি করুন</div>
+          <div>৩. Settings → Upload → <strong style="color:#fff">Add upload preset</strong> → Signing mode: <strong style="color:#fff">Unsigned</strong> → Save</div>
+          <div>৪. Preset name কপি করুন → নিচে দিন → Connect ✅</div>
+        </div>
+        <div class="fg2" style="max-width:600px;margin-bottom:12px">
+          <div class="fg">
+            <label>Cloud Name</label>
+            <input id="cloudNameInput" placeholder="your-cloud-name" style="background:var(--bg3);border:1px solid rgba(56,189,248,0.3);color:var(--txt);font-size:13px;padding:9px 12px;border-radius:7px;outline:none">
+          </div>
+          <div class="fg">
+            <label>Upload Preset</label>
+            <input id="cloudPresetInput" placeholder="ml_default বা custom preset" style="background:var(--bg3);border:1px solid rgba(56,189,248,0.3);color:var(--txt);font-size:13px;padding:9px 12px;border-radius:7px;outline:none">
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <button class="btn" style="background:linear-gradient(135deg,rgba(56,189,248,0.25),rgba(14,165,233,0.2));border:1px solid rgba(56,189,248,0.4);color:#38bdf8" onclick="connectCloudinary()">☁️ Connect</button>
+          <button class="btn btn-r btn-sm" onclick="disconnectCloudinary()" id="cloudDisBtn" style="display:none">✕ Disconnect</button>
+        </div>
+        <div id="cloudMsg" style="font-size:12px;margin-top:10px;min-height:16px"></div>
+      </div>
+
       <div class="box">
         <div class="box-h"><span>General</span></div>
         <div class="fg2">
@@ -722,6 +752,28 @@ function checkStorageUsage(){
 let FB_CFG = JSON.parse(localStorage.getItem('bq_firebase_config') || JSON.stringify({databaseURL:'https://portfolio-92184-default-rtdb.firebaseio.com'}));
 function getFbUrl(){ return 'https://portfolio-92184-default-rtdb.firebaseio.com/bq.json'; }
 
+/* ══════════════════════════════════════
+   ☁️ CLOUDINARY CONFIG (Free Image Hosting)
+   ══════════════════════════════════════ */
+const CLOUDINARY_CLOUD = localStorage.getItem('bq_cloud_name') || '';
+const CLOUDINARY_PRESET = localStorage.getItem('bq_cloud_preset') || '';
+
+async function uploadToCloudinary(file){
+  const cloudName = localStorage.getItem('bq_cloud_name') || CLOUDINARY_CLOUD;
+  const preset = localStorage.getItem('bq_cloud_preset') || CLOUDINARY_PRESET;
+  if(!cloudName || !preset){
+    // Cloudinary নেই — fallback to base64 (compressed)
+    return await compressImage(file);
+  }
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('upload_preset', preset);
+  const r = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {method:'POST', body:fd});
+  if(!r.ok) throw new Error('Upload failed');
+  const data = await r.json();
+  return data.secure_url; // https:// URL — localStorage-এ কোনো ছবি যাবে না!
+}
+
 /* ─── STATE ─── */
 let P    = JSON.parse(localStorage.getItem('bq_projects') || JSON.stringify(DEF_P));
 let CATS = JSON.parse(localStorage.getItem('bq_cats')     || JSON.stringify(DEF_CAT));
@@ -771,13 +823,20 @@ function fmtKB(b64){return((b64.length*0.75)/1024).toFixed(0)+'KB';}
 async function loadImg(e){
   const file=e.target.files[0];if(!file)return;
   const info=document.getElementById('imgInfo');
-  info.style.display='block';info.textContent='⏳ Compressing...';
-  const compressed=await compressImage(file);
-  _tempImg=compressed;
-  const prev=document.getElementById('imgPreview');
-  document.getElementById('imgPreviewEl').src=_tempImg;
-  prev.style.display='block';
-  info.textContent=`📷 ${file.name} — ${fmtKB(compressed)} (compressed ✓)`;
+  info.style.display='block';
+  const hasCloud = localStorage.getItem('bq_cloud_name');
+  info.textContent = hasCloud ? '⏳ Cloudinary-তে আপলোড হচ্ছে...' : '⏳ Compressing...';
+  try{
+    const result = await uploadToCloudinary(file);
+    _tempImg = result;
+    document.getElementById('imgPreviewEl').src = _tempImg;
+    document.getElementById('imgPreview').style.display='block';
+    info.textContent = hasCloud
+      ? `☁️ ${file.name} — Cloudinary-তে আপলোড হয়েছে ✓`
+      : `📷 ${file.name} — ${fmtKB(result)} (compressed ✓)`;
+  }catch(err){
+    info.textContent='❌ আপলোড ব্যর্থ হয়েছে: '+err.message;
+  }
   e.target.value='';
 }
 function clearImg(){_tempImg=null;document.getElementById('imgPreview').style.display='none';document.getElementById('imgFile').value='';document.getElementById('imgInfo').style.display='none'}
@@ -787,13 +846,17 @@ async function loadMultiImg(e){
   const files=Array.from(e.target.files);
   if(!files.length)return;
   const count=document.getElementById('multiImgCount');
-  count.textContent=`⏳ ${files.length} টি ছবি compress হচ্ছে...`;
+  const hasCloud=localStorage.getItem('bq_cloud_name');
   let done=0;
   for(const file of files){
-    const compressed=await compressImage(file);
-    _tempImages.push(compressed);
+    count.textContent=`⏳ ${done}/${files.length} ${hasCloud?'আপলোড':'compress'} হচ্ছে...`;
+    try{
+      const result=await uploadToCloudinary(file);
+      _tempImages.push(result);
+    }catch(err){
+      count.textContent=`❌ ${file.name} আপলোড ব্যর্থ`;
+    }
     done++;
-    count.textContent=`⏳ ${done}/${files.length} compress হচ্ছে...`;
   }
   renderMultiImgGrid();
   document.getElementById('multiImgFile').value='';
@@ -897,10 +960,12 @@ function syncVideoUrl(){} /* no-op, kept for compat */
 let _tempVidThumb=null;
 async function loadVidThumb(e){
   const file=e.target.files[0];if(!file)return;
-  const compressed=await compressImage(file,800,0.85);
-  _tempVidThumb=compressed;
-  document.getElementById('vidThumbImg').src=_tempVidThumb;
-  document.getElementById('vidThumbPreview').style.display='block';
+  try{
+    const result=await uploadToCloudinary(file);
+    _tempVidThumb=result;
+    document.getElementById('vidThumbImg').src=_tempVidThumb;
+    document.getElementById('vidThumbPreview').style.display='block';
+  }catch(err){alert('Thumbnail আপলোড ব্যর্থ: '+err.message);}
   e.target.value='';
 }
 function clearVidThumb(){
@@ -977,7 +1042,7 @@ function refresh(){
   if(document.getElementById('dWeb'))document.getElementById('dWeb').textContent=webCnt;
   if(document.getElementById('dGfx'))document.getElementById('dGfx').textContent=gfxCnt;
   if(document.getElementById('dVid'))document.getElementById('dVid').textContent=vidCnt;
-  renderDash();renderPtbl(P);renderCatList();populateSel();populateFilterSel();loadHero();loadLogo();loadFaviconPreview();loadSecurityPage();loadFbStatus();
+  renderDash();renderPtbl(P);renderCatList();populateSel();populateFilterSel();loadHero();loadLogo();loadFaviconPreview();loadSecurityPage();loadFbStatus();loadCloudStatus();
   renderFullLog();renderDashLog();
   animateNums();
   // Apply favicon
@@ -1291,6 +1356,56 @@ function disconnectFirebase(){
   updateFbStatus('disconnected');
   document.getElementById('fbMsg').innerHTML='<span style="color:var(--mu)">Firebase disconnect হয়েছে।</span>';
   toast('Firebase disconnected.');
+}
+
+/* ─── CLOUDINARY FUNCTIONS ─── */
+function loadCloudStatus(){
+  const name=localStorage.getItem('bq_cloud_name')||'';
+  const preset=localStorage.getItem('bq_cloud_preset')||'';
+  const badge=document.getElementById('cloudStatusBadge');
+  const guide=document.getElementById('cloudSetupGuide');
+  const disBtn=document.getElementById('cloudDisBtn');
+  const nameInp=document.getElementById('cloudNameInput');
+  const presetInp=document.getElementById('cloudPresetInput');
+  if(nameInp) nameInp.value=name;
+  if(presetInp) presetInp.value=preset;
+  if(name&&preset){
+    if(badge){badge.textContent='✅ Connected';badge.style.cssText='font-size:11px;padding:3px 10px;border-radius:10px;font-weight:700;background:rgba(34,197,94,0.15);color:#4ade80;border:1px solid rgba(34,197,94,0.3)';}
+    if(guide) guide.style.display='none';
+    if(disBtn) disBtn.style.display='inline-flex';
+    if(document.getElementById('cloudMsg')) document.getElementById('cloudMsg').innerHTML='<span style="color:#4ade80">✅ ছবি এখন সরাসরি Cloudinary-তে আপলোড হবে — Storage সমস্যা নেই!</span>';
+  } else {
+    if(badge){badge.textContent='⚪ Not Connected';badge.style.cssText='font-size:11px;padding:3px 10px;border-radius:10px;font-weight:700;background:rgba(100,100,100,0.15);color:var(--mu);border:1px solid var(--line)';}
+    if(guide) guide.style.display='block';
+    if(disBtn) disBtn.style.display='none';
+  }
+}
+function connectCloudinary(){
+  const name=(document.getElementById('cloudNameInput').value||'').trim();
+  const preset=(document.getElementById('cloudPresetInput').value||'').trim();
+  if(!name||!preset){document.getElementById('cloudMsg').innerHTML='<span style="color:#f87171">Cloud Name এবং Preset দুটোই দিন</span>';return;}
+  document.getElementById('cloudMsg').innerHTML='<span style="color:#38bdf8">⏳ পরীক্ষা করা হচ্ছে...</span>';
+  // Test upload with a tiny 1x1 pixel image
+  const canvas=document.createElement('canvas');canvas.width=1;canvas.height=1;
+  canvas.toBlob(async blob=>{
+    const fd=new FormData();fd.append('file',blob,'test.jpg');fd.append('upload_preset',preset);
+    try{
+      const r=await fetch(`https://api.cloudinary.com/v1_1/${name}/image/upload`,{method:'POST',body:fd});
+      if(!r.ok) throw new Error('Invalid credentials');
+      localStorage.setItem('bq_cloud_name',name);
+      localStorage.setItem('bq_cloud_preset',preset);
+      loadCloudStatus();
+      toast('☁️ Cloudinary connected! এখন থেকে ছবি cloud-এ যাবে।');
+    }catch(e){
+      document.getElementById('cloudMsg').innerHTML='<span style="color:#f87171">❌ Cloud Name বা Preset ভুল। আবার চেক করুন।</span>';
+    }
+  },'image/jpeg');
+}
+function disconnectCloudinary(){
+  localStorage.removeItem('bq_cloud_name');localStorage.removeItem('bq_cloud_preset');
+  loadCloudStatus();
+  document.getElementById('cloudMsg').innerHTML='<span style="color:var(--mu)">Cloudinary disconnect হয়েছে।</span>';
+  toast('Cloudinary disconnected.');
 }
 
 /* ─── SETTINGS ─── */
