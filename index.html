@@ -310,11 +310,16 @@ function initFirebase(){
   const fbUrl = FIREBASE_URL && FIREBASE_URL !== '__FIREBASE_URL__' ? FIREBASE_URL : null;
   if(!fbUrl) return;
   const DB_URL = fbUrl.replace(/\/$/,'') + '/bq.json';
+  // পূর্ববর্তী data-র hash রাখি — পরিবর্তন না হলে render() ডাকব না
+  let _lastHash = '';
   function fetchData(){
     fetch(DB_URL + '?t=' + Date.now())
       .then(r=>r.json())
       .then(d=>{
         if(!d) return;
+        const newHash = JSON.stringify({p: d.projects, c: d.cats, s: d.settings, h: d.hero});
+        if(newHash === _lastHash) return; // কোনো পরিবর্তন নেই — render বন্ধ
+        _lastHash = newHash;
         if(d.projects){ DATA=d.projects; localStorage.setItem('bq_projects',JSON.stringify(DATA)); }
         if(d.cats)    { CATS=d.cats;     localStorage.setItem('bq_cats',JSON.stringify(CATS)); }
         if(d.settings){ SET=d.settings;  localStorage.setItem('bq_settings',JSON.stringify(SET)); }
@@ -324,7 +329,7 @@ function initFirebase(){
       .catch(()=>{});
   }
   fetchData();
-  setInterval(fetchData, 4000);
+  setInterval(fetchData, 6000); // ৬ সেকেন্ড যথেষ্ট
 }
 initFirebase();
 
@@ -563,7 +568,7 @@ function render(){
   document.getElementById('footCopy').textContent=SET.footerCopy||'© 2025 BrandQore Digital Solutions. All rights reserved.';
   document.getElementById('hLine1').textContent=HERO.h1||'Where Creativity';
   if(HERO.sub)document.getElementById('hDesc').innerHTML=HERO.sub;
-  initTyping(HERO.h2||'Meets Growth.');
+  if(!render._lastH2||(render._lastH2!==(HERO.h2||'Meets Growth.'))){render._lastH2=HERO.h2||'Meets Growth.';initTyping(render._lastH2);}
   const tot=DATA.length,cats=new Set(DATA.map(p=>p.c)).size;
   document.getElementById('navPill').textContent=tot+' Projects';
   document.getElementById('sN1').textContent=tot;
@@ -588,8 +593,16 @@ function setF(c){AF=c;render()}
 
 function buildGrid(list){
   document.getElementById('gCount').textContent=list.length;
-  if(list.length===0){document.getElementById('pgrid').innerHTML=`<div class="empty-state"><div class="es-ico">${TYPE_CFG[ATYPE]?.ico||'📂'}</div><div class="es-txt">No ${TYPE_CFG[ATYPE]?.label||'projects'} yet</div><div class="es-sub">Add projects from Admin panel with type "${ATYPE}"</div></div>`;return}
-  document.getElementById('pgrid').innerHTML=list.map(p=>{const pt=getType(p),showLive=pt==='website'&&p.u,pj=JSON.stringify(p).replace(/"/g,'&quot;');return`<div class="pc"><div class="ct" onclick="openLB(${pj})">${cardThumb(p)}<div class="ct-fade"></div><span class="ct-n">#${String(p.n).padStart(2,'0')}</span><span class="ct-tag">${p.c}</span></div><div class="cb"><div class="cb-t">${p.t}</div><div class="cb-u">${p.u?p.u.replace('https://',''):(p.d||'')}</div><div class="cb-f"><div class="cb-actions"><button class="cb-preview-btn" onclick="openLB(${pj})">👁 Preview</button>${showLive?`<a href="${p.u}" target="_blank" class="cb-link">Live ↗</a>`:''}</div><span class="cb-ico">${CATS[p.c]||''}</span></div></div></div>`}).join('');
+  const grid=document.getElementById('pgrid');
+  if(list.length===0){grid.innerHTML=`<div class="empty-state"><div class="es-ico">${TYPE_CFG[ATYPE]?.ico||'📂'}</div><div class="es-txt">No ${TYPE_CFG[ATYPE]?.label||'projects'} yet</div><div class="es-sub">Add projects from Admin panel with type "${ATYPE}"</div></div>`;return}
+
+  // Smart diff: শুধু পরিবর্তিত card update করব — blink বন্ধ
+  const newHTML = list.map(p=>{const pt=getType(p),showLive=pt==='website'&&p.u,pj=JSON.stringify(p).replace(/"/g,'&quot;');return`<div class="pc" data-pid="${p.n}"><div class="ct" onclick="openLB(${pj})">${cardThumb(p)}<div class="ct-fade"></div><span class="ct-n">#${String(p.n).padStart(2,'0')}</span><span class="ct-tag">${p.c}</span></div><div class="cb"><div class="cb-t">${p.t}</div><div class="cb-u">${p.u?p.u.replace('https://',''):(p.d||'')}</div><div class="cb-f"><div class="cb-actions"><button class="cb-preview-btn" onclick="openLB(${pj})">👁 Preview</button>${showLive?`<a href="${p.u}" target="_blank" class="cb-link">Live ↗</a>`:''}</div><span class="cb-ico">${CATS[p.c]||''}</span></div></div></div>`}).join('');
+
+  // যদি কিছুই না বদলায় তাহলে DOM touch করব না
+  if(grid._lastHTML === newHTML) return;
+  grid._lastHTML = newHTML;
+  grid.innerHTML = newHTML;
   setTimeout(initScrollReveal,50);
 }
 
